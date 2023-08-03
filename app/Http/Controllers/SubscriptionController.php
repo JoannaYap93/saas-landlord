@@ -68,12 +68,13 @@ class SubscriptionController extends Controller
                     return $featureResponse;
                 })
                 ->editColumn('subscription_status', function($row) {
+                    $subscriptionStatus = ucfirst($row->subscription_status);
                     switch ($row->subscription_status) {
                         case 'active':
-                            $status = "<span class='badge badge-primary font-size-11'>{$row->subscription_status}</span>";
+                            $status = "<span class='badge badge-primary font-size-11'>{$subscriptionStatus}</span>";
                             break;
                         case 'disable':
-                            $status = "<span class='badge badge-warning'>{$row->subscription_status}</span>";
+                            $status = "<span class='badge badge-warning'>{$subscriptionStatus}</span>";
                             break;
                     }
                     return $status;
@@ -83,10 +84,10 @@ class SubscriptionController extends Controller
                     // $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a>';
                     switch ($row->subscription_status) {
                         case 'active':
-                            $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-warning btn-sm mr-2 edit-status" data-module-name="'. $row->feature_title .'" data-feature-status="disable" data-feature-id="'. $row->feature_id .'" >Disable</a>';
+                            $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-warning btn-sm mr-2 edit-status" data-subscription-name="' . $row->subscription_name . '" data-subscription-id="' . $row->subscription_id . '" data-status="disable">Disable</a>';
                             break;
                         case 'disable':
-                            $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-primary btn-sm mr-2 edit-status" data-module-name="'. $row->feature_title .'" data-feature-status="active" data-feature-id="'. $row->feature_id .'" >Active</a>';
+                            $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-primary btn-sm mr-2 edit-status" data-subscription-name="' . $row->subscription_name . '" data-subscription-id="' . $row->subscription_id . '" data-status="active">Active</a>';
                             break;
                     }
                     $actionBtn .= '<a href="' . route('subscription.edit.view', ['subscription_id' => $row->subscription_id]) .'" class="btn btn-outline-success btn-sm mr-2">Edit</a>';
@@ -231,5 +232,18 @@ class SubscriptionController extends Controller
         $subscription = Subscription::with(['feature'])->findOrFail($subscription_id);
         $feature = FeatureSetting::get();
         return view('subscription/edit', compact(['feature', 'subscription']));
+    }
+
+    public function changeStatus(Request $request)
+    {
+
+        $subscription = Subscription::findOrFail($request->input('subscription_id'));
+        $subscription->subscription_status = $request->input('subscription_status');
+        $subscription->save();
+
+        return [
+            'status' => 200,
+            'message' => 'Change subscription successfully!'
+        ];
     } 
 }

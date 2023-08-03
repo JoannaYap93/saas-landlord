@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('subscription_maximum_charge_per_year', 11, 2)->nullable();
             $table->decimal('subscription_price', 11, 2)->nullable();
             $table->decimal('subscription_charge_per_kg', 11, 2)->nullable();
-            $table->enum('subscription_status', ['active', 'inactive'])->default('active');
+            $table->enum('subscription_status', ['active', 'disable'])->default('active');
             $table->timestamps();
         });
     }

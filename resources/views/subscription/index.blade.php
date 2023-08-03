@@ -166,6 +166,77 @@
 				}
 			});
 		}
+
+		$('.subscription-datatable').on('click', '.edit-status', function () {
+			let alertTitle, alertText, alertBtnText, moduleTitle = '';
+			subscriptionTitle = $(this).data('subscription-name');
+
+			let subscription_id = $(this).data('subscription-id');
+			let subscription_status = $(this).data('status');
+			if ($(this).data('status') == 'disable') {
+				alertTitle = 'Active Subscription';
+				alertText = `Are you sure u want to enable ${subscriptionTitle}?`;
+				alertBtnText = 'Enable';
+			} else {
+				alertTitle = 'Disable Subscription';
+				alertText = `Are you sure u want to disable ${subscriptionTitle}?`;
+				alertBtnText = 'Disable';
+			}
+
+			Swal.fire({
+				title: alertTitle,
+				text: alertText,
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#228B22',
+				cancelButtonColor: '#d33',
+				confirmButtonText: alertBtnText
+			}).then(function (results) {
+
+				if (results.value) {
+					$.ajax({
+						type: "POST",
+						url: "{{ route('subscription.change-status') }}",
+						data: {
+							_token: "{{ csrf_token() }}",
+							subscription_id: subscription_id,
+							subscription_status: subscription_status
+						},
+						dataType: "json",
+						encode: true,
+						success: function(data){  
+							if (data.status == 200) {
+								Swal.fire({
+									type: 'success',
+									title: 'Success!',
+									text: data.message,
+								}).then((result) => {
+									if (result.value) {
+										let free_text = $('.free_text').val();
+										let search_status = $('.status_search').val();
+										$('.subscription-datatable').DataTable().destroy();
+										initializeDatatable(free_text, search_status);
+									}
+								});
+							} else {
+								Swal.fire({
+									type: 'error',
+									title: 'Something went wrong!',
+									text: 'Please try again later!',
+								})
+							}
+						},
+						error: function(error) { 
+							Swal.fire({
+								type: 'error',
+								title: 'Something went wrong!',
+								text: 'Please try again later!',
+							})
+						}
+					})
+				}
+			});
+		});
 	});
 </script>
 @endsection

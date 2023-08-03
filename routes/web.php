@@ -61,6 +61,7 @@ Route::group(['prefix' => 'subscription'], function () {
         Route::post('save', 'SubscriptionController@save')->name('subscription.save');
         Route::get('edit/{subscription_id}', 'SubscriptionController@edit')->name('subscription.edit.view');
         Route::post('store-edit', 'SubscriptionController@storeEdit')->name('subscription.edit.save');
+        Route::post('change-status', 'SubscriptionController@changeStatus')->name('subscription.change-status');
     // });
 });
 

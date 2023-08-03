@@ -50,12 +50,13 @@ class FeatureController extends Controller
             return datatables()->of($data)
                 ->addIndexColumn()
                 ->editColumn('feature_status', function($row) {
+                    $featureStatus = ucfirst($row->feature_status);
                     switch ($row->feature_status) {
                         case 'active':
-                            $status = "<span class='badge badge-primary font-size-11'>{$row->feature_status}</span>";
+                            $status = "<span class='badge badge-primary font-size-11'>{$featureStatus}</span>";
                             break;
                         case 'disable':
-                            $status = "<span class='badge badge-warning'>{$row->feature_status}</span>";
+                            $status = "<span class='badge badge-warning'>{$featureStatus}</span>";
                             break;
                     }
                     return $status;
