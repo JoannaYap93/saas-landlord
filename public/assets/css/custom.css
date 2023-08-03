@@ -1,0 +1,28 @@
+body.login {
+    background-color: #000000;
+}
+
+body[data-sidebar="dark"] .menu-title {
+    color: #ffffff;
+}
+.small-table {
+    width: 100%;
+}
+.small-table th,
+.small-table td {
+    padding: 4px 10px 4px 0px;
+}
+small p {
+    margin-bottom: 0 !important;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e2e2e2;
+    color: rgb(73, 80, 87);
+}
+.va_top{
+    vertical-align: top;
+}
+#room_area_table{
+    padding-inline-start:0;
+}
