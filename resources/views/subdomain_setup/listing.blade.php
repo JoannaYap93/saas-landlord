@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') Subdomain Listing @endsection
+@section('title') Tenant Listing @endsection
 
 @section('content')
 <link href="{{ URL::asset('assets/libs/datatables/datatables.min.css')}}" rel="stylesheet" type="text/css" />
@@ -9,11 +9,11 @@
 <div class="row">
 	<div class="col-12">
 		<div class="page-title-box d-flex align-items-center justify-content-between">
-			<h4 class="mb-0 font-size-18">Subdomain Listing</h4>
+			<h4 class="mb-0 font-size-18">Tenant Listing</h4>
 			<div class="page-title-right">
 				<ol class="breadcrumb m-0">
 					<li class="breadcrumb-item">
-						<a href="javascript: void(0);">Subdomain</a>
+						<a href="javascript: void(0);">Tenant</a>
 					</li>
 					<li class="breadcrumb-item active">Listing</li>
 				</ol>
@@ -57,7 +57,7 @@
 						<div class="text-sm-right">
 							<a href="{{ route('subdomain_add') }}">
 								<button type="button" class="btn btn-success  waves-effect waves-light mb-2 mr-2">
-									<i class="mdi mdi-plus mr-1"></i> Add Subdomain
+									<i class="mdi mdi-plus mr-1"></i> Add Tenant
 								</button>
 							</a>
 						</div>
@@ -69,9 +69,12 @@
 						<thead class="thead-light">
 							<tr>
 								<th scope="col" style="width: 70px;">#</th>
-								<th>Tenant</th>
-								<th>Domain</th>
-								<th>Domain Code</th>
+								<th>Tenant Name</th>
+								<th>Tenant Code</th>
+								<th>Subscription Plan</th>
+								<th>Person Incharge</th>
+								<th>First Payment</th>
+								<th>Tenant Status</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -182,9 +185,12 @@
 				},
 				columns: [
 					{ data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-					{ data: 'domain', name: 'domain' },
-					{ data: 'tenant_id', name: 'tenant_id' },
-					{ data: 'domain_code', name: 'domain_code' },
+					{ data: 'tenant_name', name: 'tenant_name' },
+					{ data: 'tenant_code', name: 'tenant_code' },
+					{ data: 'subscription', name: 'subscription' },
+					{ data: 'pic_user', name: 'pic_user' },
+					{ data: 'subscription_first_time_status', name: 'subscription_first_time_status' },
+					{ data: 'tenant_status', name: 'tenant_status' },
 					{
 						data: 'action', 
 						name: 'action', 

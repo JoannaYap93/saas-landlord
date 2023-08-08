@@ -32,4 +32,9 @@ class UserType extends Model
         }
         return $temp;
     }
+
+    public static function getUserRole () {
+        $user_role = Role::get();
+        return $user_role;
+    }
 }

@@ -33,7 +33,7 @@ class User extends Authenticatable
     // protected static $submitEmptyLogs = false;
 
     protected $fillable = [
-        'user_type_id', 'user_email', 'password', 'user_fullname', 'user_profile_photo', 'user_nric', 'user_nationality', 'user_gender', 'user_address', 'user_address2', 'user_city', 'user_state', 'user_postcode', 'user_dob', 'user_status', 'user_logindate', 'user_cdate', 'user_udate', 'user_ip', 'is_deleted', 'user_mobile', 'user_join_date', 'user_admin_skin', 'user_unique_code'
+        'user_type_id', 'user_email', 'password', 'user_fullname', 'user_profile_photo', 'user_nric', 'user_nationality', 'user_gender', 'user_address', 'user_address2', 'user_city', 'user_state', 'user_postcode', 'user_dob', 'user_status', 'user_logindate', 'user_cdate', 'user_udate', 'user_ip', 'is_deleted', 'user_mobile', 'user_join_date', 'user_admin_skin', 'user_unique_code', 'referral_code'
     ];
 
     protected $hidden = [

@@ -12,7 +12,7 @@ class Setting extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'setting_slug', 'setting_slug', 'setting_value', 'setting_description', 'is_editable'
+        'setting_slug', 'setting_type', 'setting_value', 'setting_description', 'is_editable'
     ];
 
     public static function get_record($search, $perpage){

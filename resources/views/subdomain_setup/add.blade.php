@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') New Subdomain @endsection
+@section('title') Add Tenant @endsection
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css')}}">
@@ -14,11 +14,11 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0 font-size-18">New Subdomain</h4>
+            <h4 class="mb-0 font-size-18">Add Tenant</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                        <a href="javascript: void(0);">Subdomain</a>
+                        <a href="javascript: void(0);">Tenant</a>
                     </li>
                     <li class="breadcrumb-item active">Add</li>
                 </ol>
@@ -32,7 +32,7 @@
             @csrf
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Subdomain Details</h4>
+                    <h4 class="card-title mb-4">Tenant Details</h4>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -46,12 +46,22 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="user_email">Subdomain<span class="text-danger">*</span> 
+                                <label for="user_email">Tenant Code<span class="text-danger">*</span> 
                                     <small id="passwordHelpInline" class="text-muted">
-                                        <span class="dynamic_domain">example</span>.{{ env('HUAXIN_BACKEND_URL') }}
+                                        {{ env('HUAXIN_BACKEND_URL') }}/<span class="dynamic_domain">TenantCode</span>
                                     </small>
                                 </label>
-                                <input name="subdomain" type="text" class="form-control domain_name" value="" >
+                                <input name="tenant_code" type="text" class="form-control domain_name" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label for="user_email">Subscription Plan<span class="text-danger">*</span> 
+                                </label>
+                                <select class="select2 form-control subscription_plan" name="subscription_id">
+                                    <option value="">Please select plan</option>
+                                    @foreach ($subscription as $sub)
+                                        <option value="{{ $sub->subscription_id }}">{{ $sub->subscription_name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -59,7 +69,38 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Subdomain Admin User</h4>
+                    <h4 class="card-title mb-4">Company Details</h4>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="company_name">Company Name<span class="text-danger">*</span></label>
+                                <input name="company_name" type="text" class="form-control" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="company_address">Company Address<span class="text-danger">*</span></label>
+                                <input name="company_address" type="text" class="form-control" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="company_phone_no">Company Phone No<span class="text-danger">*</span></label>
+                                <input name="company_phone_no" type="text" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="company_email">Company Email<span class="text-danger">*</span></label>
+                                <input name="company_email" type="email" class="form-control" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label for="company_reg_no">Company Reg Number<span class="text-danger">*</span></label>
+                                <input name="company_reg_no" type="text" class="form-control" value="" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Tenant Admin User</h4>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">

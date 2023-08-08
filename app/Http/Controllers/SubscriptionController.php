@@ -8,17 +8,25 @@ use DataTables;
 use DatePeriod;
 use DateInterval;
 use Carbon\Carbon;
+use App\Model\User;
+use App\Model\Tenant;
+use App\Model\Setting;
 use App\Model\Subscription;
 use Illuminate\Support\Arr;
+use App\Model\TenantCompany;
 use Illuminate\Http\Request;
 use App\Model\FeatureSetting;
 use App\Model\SubscriptionFeature;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use App\Mail\TenantSuccessRegister;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
+use App\Model\SubscriptionTransaction;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +36,7 @@ class SubscriptionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth']);
+        $this->middleware(['auth'], ['except' => ['tenantViewOrder', 'tenantPaySubscription']]);
     }
 
     public function getSubscription(Request $request)
@@ -246,4 +254,121 @@ class SubscriptionController extends Controller
             'message' => 'Change subscription successfully!'
         ];
     } 
+
+    public function tenantViewOrder($tenant_company_id, $expired_time) {
+        $tenant_company_id = Crypt::decryptString($tenant_company_id);
+        $expired_time = Crypt::decryptString($expired_time);
+
+        $currentTime = Carbon::now();
+        if ($currentTime > $expired_time) {
+            abort(404);
+        }
+        $tenant = TenantCompany::with(['subscription', 'subscription.feature'])->findOrFail($tenant_company_id);
+
+        if (Arr::get($tenant, 'subscription_first_time_status') == 'paid') {
+            abort(404);
+        }
+        $date = $currentTime->format('d M Y');
+        return view('order-summary', compact(['tenant', 'date']));
+
+    }
+
+    public function tenantPaySubscription(Request $request) {
+        $tenant_company_id = $request->input('tenant_id');
+
+        $tenant = TenantCompany::with(['subscription', 'pic_user'])->findOrFail($tenant_company_id);
+
+        if (Arr::get($tenant, 'subscription_first_time_status') == 'paid') {
+            return [
+                'status' => 500,
+                'message' => 'Your subscription already active! You can proceed to login page.'
+            ];
+        }
+
+        $subscription_price = Arr::get($tenant, 'subscription.subscription_price', 0);
+        $subscription_price_per_kg = 0;
+        $subscription_additional_price = 0;
+        $transaction_month = Carbon::now()->format('m');
+        $transaction_year = Carbon::now()->format('Y');
+        $grandTotalPrice = $subscription_price + $subscription_price_per_kg + $subscription_additional_price;
+
+        // Transaction
+        $subscriptionTransaction = SubscriptionTransaction::create([
+            'transaction_number' => generateTransactionNumber(),
+            'subscription_id' => Arr::get($tenant, 'subscription_id'),
+            'tenant_id' => Arr::get($tenant, 'id'),
+            'subscription_price' => Arr::get($tenant, 'subscription.subscription_price'),
+            'subscription_price_per_kg' => 0,
+            'subscription_additional_price' => 0,
+            'subscription_grand_total_price' => Arr::get($tenant, 'subscription.subscription_price'),
+            'transaction_month' => $transaction_month,
+            'transaction_year' => $transaction_year,
+            'transaction_cc_token' => 'token',
+            'transaction_status' => 'Paid'
+        ]);
+
+        // Change Status Paid
+        $tenant->subscription_first_time_status = 'paid';
+        $tenant->save();
+
+        // Run query below in queue for better performance
+
+        // Add to tenancy function to create tenant
+        $tenancy = Tenant::create([
+            'id' => Arr::get($tenant, 'tenant_code'),
+            'subscription_id' => Arr::get($tenant, 'subscription_id')
+        ]);
+        
+        tenancy()->initialize($tenancy);
+        $user = User::create([
+            'user_email' => Arr::get($tenant, 'pic_user.user_email'),
+            'password' => Arr::get($tenant, 'pic_user.password'),
+            'user_fullname' => Arr::get($tenant, 'pic_user.user_fullname'),
+            'user_gender' => Arr::get($tenant, 'pic_user.user_gender'),
+            'user_nationality' => Arr::get($tenant, 'pic_user.user_nationality'),
+            'user_status' => 'active',
+            'user_mobile' => Arr::get($tenant, 'pic_user.user_mobile'),
+            'user_join_date' => Arr::get($tenant, 'pic_user.user_join_date'),
+            'user_type_id' => 1,
+            'user_language' => 'en',
+            'user_unique_code' => Arr::get($tenant, 'pic_user.user_unique_code'),
+            'user_cdate' => date('d-m-y h:i:s'),
+            'user_udate' => date('d-m-y h:i:s'),
+        ]);
+
+        $setting_data = Setting::updateOrCreate([
+            'setting_slug' => 'company_name'
+        ], [
+            'setting_value' => Arr::get($tenant, 'company_name'),
+        ]);
+        $setting_data = Setting::updateOrCreate([
+            'setting_slug' => 'company_address'
+        ], [
+            'setting_value' => Arr::get($tenant, 'company_address'),
+        ]);
+        $setting_data = Setting::updateOrCreate([
+            'setting_slug' => 'company_email'
+        ], [
+            'setting_value' => Arr::get($tenant, 'company_email'),
+        ]);
+        $setting_data = Setting::updateOrCreate([
+            'setting_slug' => 'company_reg_no'
+        ], [
+            'setting_value' => Arr::get($tenant, 'company_reg_no'),
+        ]);
+        $setting_data = Setting::updateOrCreate([
+            'setting_slug' => 'company_phone'
+        ], [
+            'setting_value' => Arr::get($tenant, 'company_phone_no'),
+        ]);
+        tenancy()->end();
+
+        // Send invoice to email
+        Mail::to($tenant->company_email)->send(new TenantSuccessRegister($tenant));
+
+        return [
+            'status' => 200,
+            'message' => 'Registration Completed!',
+        ];
+    }
 }

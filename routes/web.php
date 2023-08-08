@@ -1,5 +1,7 @@
 <?php
 
+use App\Model\Setting;
+
 Auth::routes(['register' => false]);
 
 Route::get('/', 'UserController@dashboard')->name('dashboard');
@@ -15,12 +17,16 @@ Route::match(['get', 'post'], 'user/change_password', 'UserController@change_pas
     Route::match(['get', 'post'], 'user/listing', 'UserController@listing')->name('user_listing');
 // });
 // Route::group(['middleware' => ['permission:user_manage']], function () {
+// });
     //User 
-    Route::match(['get', 'post'], 'user/add', 'UserController@add')->name('user_add');
-    Route::match(['get', 'post'], 'user/edit/{id}', 'UserController@edit')->name('user_edit');
+Route::group(['prefix' => 'user'], function () {
+    Route::get('add', 'UserController@add')->name('user_add');
+    Route::post('store', 'UserController@store_add')->name('user.store');
+    Route::get('edit/{id}', 'UserController@edit')->name('user_edit');
+    Route::post('edit-store', 'UserController@store_edit')->name('user.store.edit');
     Route::post('status', 'UserController@status')->name('user_status');
     Route::match(['get', 'post'], 'user/assign_permission/{id}', 'UserController@assign_permission')->name('assign_permission');
-// });
+});
 Route::match(['get', 'post'], 'user/ajax_get_user_details', 'UserController@ajax_get_user_details')->name('ajax_get_user_details');
 
 // Route::group(['middleware' => ['permission:user_role_listing']], function () {
@@ -54,6 +60,8 @@ Route::group(['prefix' => 'feature'], function () {
 
 //Subscription
 Route::group(['prefix' => 'subscription'], function () {
+        Route::get('send-mail', 'MailController@index');
+
     // Route::group(['middleware' => ['permission:user_create']], function () {
         Route::post('listing/datatable', 'SubscriptionController@getSubscription')->name('subscription.datatable');
         Route::get('listing', 'SubscriptionController@index')->name('subscription.index');
@@ -72,4 +80,6 @@ Route::group(['prefix' => 'subscription'], function () {
     // Route::match(['get', 'post'], 'setting/edit/{id}', 'SettingController@edit')->name('setting_edit');
 // });
 
+Route::get('order-summary/{tenant_company_id}/{expired_time}', 'SubscriptionController@tenantViewOrder')->name('subscription.view.order');
+Route::post('order-summary-payment', 'SubscriptionController@tenantPaySubscription')->name('subscription.pay.order');
 Route::get('{any}', 'HomeController@index');

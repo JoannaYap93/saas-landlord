@@ -15,9 +15,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     {
         return [
             'id',
-            'referral_code',
-            'tenant_status',
-            'tenant_code'
+            'subscription_id',
         ];
     }
 }

@@ -69,81 +69,107 @@ class UserController extends Controller
 
     public function add(Request $request)
     {
-        $validator = null;
-        $post = null;
-        if($request->isMethod('post')){
-            $validator = Validator::make($request->all(), [
-                'user_email' => 'required|unique:tbl_user,user_email',
-                'password' => ['required', 'min:8'],
-                'user_fullname' => 'required',
-                'user_nric' => 'required',
-                'user_nationality' => 'required',
-                'user_gender' => 'required',
-                'user_dob' => 'required',
-                'user_mobile' => 'required|unique:tbl_user,user_mobile',
-                'user_type_id' => 'required'
-            ])->setAttributeNames([
-                'user_email' => 'Email',
-                'password' => 'Password',
-                'user_fullname' => 'Fullname',
-                'user_nric' => 'NRIC',
-                'user_nationality' => 'Nationality',
-                'user_gender' => 'Gender',
-                'user_dob' => 'Date of Birth',
-                'user_mobile' => 'Mobile No',
-                'user_type_id' => 'User Type'
-            ]);
-            if (!$validator->fails()) {
-               
-                $user_type_id = $request->input('user_type_id');
-                $user_role_id = $request->input('user_role_id');
-                $user = User::create([
-                    'user_email' => $request->input('user_email'),
-                    'password' => bcrypt($request->input('password')),
-                    'user_fullname' =>  $request->input('user_fullname'),
-                    'user_nric' => $request->input('user_nric'),
-                    'user_nationality' =>$request->input('user_nationality'),
-                    'user_gender' => $request->input('user_gender'),
-                    'user_dob' => $request->input('user_dob'),
-                    'user_mobile' => $request->input('user_mobile'),
-                    'user_type_id' =>  $user_type_id ,
-                    'user_logindate' => now(),
-                    'user_cdate' => now(),
-                    'user_udate' => now(),
-                    'user_join_date' => now(),
-                    'user_ip' => '',
-                    'user_profile_photo' => '',
-                    'user_platform_id' => '1',
-                    'user_address' => $request->input('user_address') ? $request->input('user_address') : '',
-                    'user_address2' => $request->input('user_address2') ? $request->input('user_address2') : '',
-                    'user_city' => $request->input('user_city') ? $request->input('user_city') : '',
-                    'user_state' => $request->input('user_state') ? $request->input('user_state') : '',
-                    'user_postcode' => $request->input('user_postcode') ? $request->input('user_postcode') : '',
-                    
-                ]);
-                if ($user_type_id == 1 && $user_role_id > 0) {
-                    $role = Role::findById($user_role_id);
-                    if($role){
-                        $user->syncRoles($role->name);
-                    }
-                }
-                Session::flash('success_msg', 'Successfully added '.$request->input('user_fullname'));
-                return redirect()->route('user_listing');
-            }
-            $post = (object) $request->all();
-        }
-        return view('user/form', [
-            'submit'=> route('user_add'),
-            'title'=> 'Add',
-            'post'=> $post,
-            'user_type_sel'=> UserType::get_user_type_sel(),
-            'user_role_sel'=> UserType::get_user_role_sel(),
-            'user_gender_sel'=> array('' => 'Please select gender', 'Male' => 'Male', 'Female ' => 'Female'),
-        ])->withErrors($validator);
+        $roles = UserType::getUserRole();
+        return view('user/form', compact('roles'));
     }
 
-    public function edit(Request $request, $user_id)
+    public function store_add(Request $request) {
+        $validator = null;
+        $validator = Validator::make($request->all(), [
+            'user_email' => 'required|unique:tbl_user,user_email',
+            'user_role_id' => 'required',
+            'password' => ['required', 'min:8'],
+            'user_fullname' => 'required',
+            'user_nric' => 'required',
+            'user_nationality' => 'required',
+            'user_gender' => 'required',
+            'user_dob' => 'required',
+            'user_mobile' => 'required|unique:tbl_user,user_mobile',
+        ])->setAttributeNames([
+            'user_email' => 'Email',
+            'user_role_id' => 'User Role',
+            'password' => 'Password',
+            'user_fullname' => 'Fullname',
+            'user_nric' => 'NRIC',
+            'user_nationality' => 'Nationality',
+            'user_gender' => 'Gender',
+            'user_dob' => 'Date of Birth',
+            'user_mobile' => 'Mobile No',
+        ]);
+
+        if (count($validator->errors())) {
+            $error_message = $validator->messages()->all();
+            $error_highlited = $validator->messages()->keys();
+            $response_message = '';
+            $highlitedField = array();
+            foreach($error_message as $key => $message) {
+                $response_message .= '<i class="pr-2 text-danger fa fa-info-circle"></i>';
+                $response_message .= $message . '<br>';
+            }
+            return [
+                'status' => 500,
+                'message' => $response_message,
+                'highlited_field' => $error_highlited
+            ];
+        } else {
+            if ($request->input('referral_code')) {
+                $referralCode = $request->input('referral_code');
+            } else {
+                $referralCode = generateReferralCode();
+            }
+            
+            $user_type_id = 1;
+            $user_role_id = $request->input('user_role_id');
+            $user = User::create([
+                'user_email' => $request->input('user_email'),
+                'password' => bcrypt($request->input('password')),
+                'user_fullname' =>  $request->input('user_fullname'),
+                'user_nric' => $request->input('user_nric'),
+                'user_nationality' =>$request->input('user_nationality'),
+                'user_gender' => $request->input('user_gender'),
+                'user_dob' => $request->input('user_dob'),
+                'user_mobile' => $request->input('user_mobile'),
+                'user_type_id' =>  $user_type_id ,
+                'user_logindate' => now(),
+                'user_cdate' => now(),
+                'user_udate' => now(),
+                'user_join_date' => now(),
+                'user_ip' => '',
+                'user_profile_photo' => '',
+                'user_platform_id' => '1',
+                'user_address' => $request->input('user_address') ? $request->input('user_address') : '',
+                'user_address2' => $request->input('user_address2') ? $request->input('user_address2') : '',
+                'user_city' => $request->input('user_city') ? $request->input('user_city') : '',
+                'user_state' => $request->input('user_state') ? $request->input('user_state') : '',
+                'user_postcode' => $request->input('user_postcode') ? $request->input('user_postcode') : '',
+                'referral_code' => $referralCode
+                
+            ]);
+            if ($user_type_id == 1 && $user_role_id > 0) {
+                $role = Role::findById($user_role_id);
+                if($role){
+                    $user->syncRoles($role->name);
+                }
+            }
+
+            return [
+                'status' => 200,
+                'message' => 'Create User Successfully!',
+            ];
+
+        }
+
+       
+        // $post = (object) $request->all();
+    }
+
+    public function edit($user_id)
     {
+        $roles = UserType::getUserRole();
+        $user = User::find($user_id);
+        $user_role = optional($user->roles)->first();
+        return view('user/edit', compact(['roles', 'user', 'user_role']));
+
         $validator = null;
         $post = $user =  User::find($user_id);
         $post->password = 'xxxxxxxx';
@@ -162,7 +188,6 @@ class UserController extends Controller
                 'user_gender' => 'required',
                 'user_dob' => 'required',
                 'user_mobile' => "required|unique:tbl_user,user_mobile,{$user_id},user_id",
-                'user_type_id' => 'required'
             ])->setAttributeNames([
                 'user_email' => 'Email',
                 'password' => 'Password',
@@ -172,7 +197,6 @@ class UserController extends Controller
                 'user_gender' => 'Gender',
                 'user_dob' => 'Date of Birth',
                 'user_mobile' => 'Mobile No',
-                'user_type_id' => 'User Type'
             ]);
             
             if (!$validator->fails()) {
@@ -404,6 +428,83 @@ class UserController extends Controller
         ])->withErrors($validator);
     }
 
+    public function store_edit(Request $request) {
+        $user_id = $request->input('user_id');
+        $validator = Validator::make($request->all(), [
+            'user_email' => "required|unique:tbl_user,user_email,{$user_id},user_id",
+            'user_role_id' => 'required',
+            'user_fullname' => 'required',
+            'user_nric' => 'required',
+            'user_nationality' => 'required',
+            'user_gender' => 'required',
+            'user_dob' => 'required',
+            'user_mobile' => "required|unique:tbl_user,user_mobile,{$user_id},user_id",
+            'user_profile_photo' => 'image|mimes:jpeg,png,jpg|max:2048'
+        ])->setAttributeNames([
+            'user_email' => 'Email',
+            'user_fullname' => 'Fullname',
+            'user_nric' => 'NRIC',
+            'user_role_id' => 'User Role',
+            'user_nationality' => 'Nationality',
+            'user_gender' => 'Gender',
+            'user_dob' => 'Date of Birth',
+            'user_mobile' => 'Mobile No',
+            'user_profile_photo' => 'User Profile Photo'
+        ]);
+        
+        if (count($validator->errors())) {
+            $error_message = $validator->messages()->all();
+            $error_highlited = $validator->messages()->keys();
+            $response_message = '';
+            $highlitedField = array();
+            foreach($error_message as $key => $message) {
+                $response_message .= '<i class="pr-2 text-danger fa fa-info-circle"></i>';
+                $response_message .= $message . '<br>';
+            }
+            return [
+                'status' => 500,
+                'message' => $response_message,
+                'highlited_field' => $error_highlited
+            ];
+        } else {
+            $user = User::find($user_id);
+            $user_type_id = 1;
+            $user_role_id = $request->input('user_role_id');
+            $update_detail = [
+                'user_email' => $request->input('user_email'),
+                'user_fullname' =>  $request->input('user_fullname'),
+                'user_nric' => $request->input('user_nric'),
+                'user_nationality' =>$request->input('user_nationality'),
+                'user_gender' => $request->input('user_gender'),
+                'user_dob' => $request->input('user_dob'),
+                'user_mobile' => $request->input('user_mobile'),
+                'user_type_id' =>  $user_type_id ,
+                'user_udate' => now(),
+                'user_address' => $request->input('user_address') ? $request->input('user_address') : '',
+                'user_address2' => $request->input('user_address2') ? $request->input('user_address2') : '',
+                'user_city' => $request->input('user_city') ? $request->input('user_city') : '',
+                'user_state' => $request->input('user_state') ? $request->input('user_state') : '',
+                'user_postcode' => $request->input('user_postcode') ? $request->input('user_postcode') : '',
+            ];
+            if ($request->input('password') != '') {
+                $update_detail['password'] = bcrypt($request->input('password'));
+            }
+            $user->update($update_detail);
+            if ($user_type_id == 1 && $user_role_id > 0) {
+                $role = Role::findById($user_role_id);
+                if($role){
+                    $user->syncRoles($role->name);
+                }
+            }else{
+                $user->syncRoles([]);
+            }
+
+            return [
+                'status' => 200,
+                'message' => 'Edit User Successfully!',
+            ];
+        }
+    }
     // public function ajax_get_user_details(Request $request)
     // {
     //     $user_id = $request->input('user_id');
