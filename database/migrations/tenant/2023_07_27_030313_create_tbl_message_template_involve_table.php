@@ -15,6 +15,7 @@ class CreateTblMessageTemplateInvolveTable extends Migration
     {
         Schema::create('tbl_message_template_involve', function (Blueprint $table) {
             $table->increments('message_template_involve_id');
+            $table->string('message_template_involve_type', 100)->nullable();
             $table->string('message_template_involve_slug', 100)->nullable();
             $table->dateTime('message_template_involve_created');
             $table->dateTime('message_template_involve_updated');
