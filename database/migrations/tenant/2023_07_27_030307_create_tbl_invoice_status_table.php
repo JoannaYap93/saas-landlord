@@ -14,7 +14,7 @@ class CreateTblInvoiceStatusTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice_status', function (Blueprint $table) {
-            $table->integer('invoice_status_id')->primary();
+            $table->increments('invoice_status_id');
             $table->string('invoice_status_name', 255)->nullable();
         });
     }

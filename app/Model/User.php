@@ -43,7 +43,9 @@ class User extends Authenticatable
     public static function get_record($search, $perpage)
     {
         $user = User::query();
-
+        $user->whereHas('roles', function ($query) {
+            $query->where('name','!=', 'Sales Advisor');
+        });
         if (@$search['freetext']) {
             $freetext = $search['freetext'];
             $user->where(function ($q) use ($freetext) {
@@ -128,5 +130,10 @@ class User extends Authenticatable
         $postcode = ucwords($this->user_postcode);
         $full_address = sprintf('%s,<br>%s,<br>%s,<br>%s,<br>%s', $address_1, $address_2, $postcode, $city, $state);
         return $full_address;
+    }
+
+    public function user_tenant()
+    {
+        return $this->hasMany(TenantCompany::class,'referral_code', 'referral_code');
     }
 }

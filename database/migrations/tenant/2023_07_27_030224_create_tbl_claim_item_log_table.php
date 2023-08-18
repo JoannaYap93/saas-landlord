@@ -14,7 +14,7 @@ class CreateTblClaimItemLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_claim_item_log', function (Blueprint $table) {
-            $table->integer('claim_item_log_id')->primary();
+            $table->increments('claim_item_log_id');
             $table->integer('claim_item_id');
             $table->dateTime('claim_item_log_created');
             $table->string('claim_item_log_action', 45);

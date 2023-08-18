@@ -14,7 +14,7 @@ class CreateTblInvoiceItemTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice_item', function (Blueprint $table) {
-            $table->integer('invoice_item_id')->primary();
+            $table->increments('invoice_item_id');
             $table->integer('invoice_id');
             $table->integer('product_id');
             $table->integer('setting_product_size_id');

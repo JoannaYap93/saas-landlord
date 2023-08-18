@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('feature_group')->nullable();
             $table->string('feature_icon')->nullable();
             $table->decimal('feature_extra_charge', 11, 2)->nullable();
+            $table->integer('feature_charge_per_kg')->default(0);
+            $table->integer('feature_charge_per_year')->default(0);
+            $table->integer('feature_charge_subscription_price')->default(0);
             $table->enum('feature_status', ['active', 'disable'])->default('active');
         });
     }

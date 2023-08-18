@@ -14,7 +14,7 @@ class CreateTblCustomerPicLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_customer_pic_log', function (Blueprint $table) {
-            $table->integer('customer_pic_log_id')->primary()->unique();
+            $table->increments('customer_pic_log_id');
             $table->integer('customer_pic_id');
             $table->dateTime('customer_pic_log_created');
             $table->dateTime('customer_pic_log_updated');

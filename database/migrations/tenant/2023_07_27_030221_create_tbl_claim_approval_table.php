@@ -14,7 +14,7 @@ class CreateTblClaimApprovalTable extends Migration
     public function up()
     {
         Schema::create('tbl_claim_approval', function (Blueprint $table) {
-            $table->integer('claim_approval_id')->primary();
+            $table->increments('claim_approval_id');
             $table->integer('claim_approval_step_id');
             $table->dateTime('claim_approval_created');
             $table->integer('approval_user_id');

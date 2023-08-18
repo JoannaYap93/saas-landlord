@@ -14,7 +14,7 @@ class CreateTblSyncDeliveryOrderLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_sync_delivery_order_log', function (Blueprint $table) {
-            $table->integer('sync_delivery_order_log_id')->primary();
+            $table->increments('sync_delivery_order_log_id');
             $table->integer('sync_delivery_order_id');
             $table->dateTime('sync_delivery_order_log_created');
             $table->string('sync_delivery_order_log_action', 100);

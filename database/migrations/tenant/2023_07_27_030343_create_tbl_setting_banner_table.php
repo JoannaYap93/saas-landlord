@@ -14,7 +14,7 @@ class CreateTblSettingBannerTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_banner', function (Blueprint $table) {
-            $table->integer('setting_banner_id')->primary();
+            $table->increments('setting_banner_id');
             $table->string('setting_banner_name', 45)->nullable();
             $table->enum('setting_banner_status', ['draft', 'published', 'deleted'])->default('draft');
             $table->integer('setting_banner_priority')->nullable();

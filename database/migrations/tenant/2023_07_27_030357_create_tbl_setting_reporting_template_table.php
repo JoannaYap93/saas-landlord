@@ -14,7 +14,7 @@ class CreateTblSettingReportingTemplateTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_reporting_template', function (Blueprint $table) {
-            $table->integer('setting_reporting_template_id')->primary();
+            $table->increments('setting_reporting_template_id');
             $table->string('setting_reporting_template_name', 30)->nullable();
         });
     }

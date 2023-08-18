@@ -17,6 +17,9 @@ class FeatureSetting extends Model
         'feature_group',
         'feature_icon',
         'feature_extra_charge',
+        'feature_charge_per_kg',
+        'feature_charge_per_year',
+        'feature_charge_subscription_price',
     ];
 
     public function subscription()

@@ -14,7 +14,7 @@ class CreateTblSettingStateTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_state', function (Blueprint $table) {
-            $table->integer('setting_state_id')->primary();
+            $table->increments('setting_state_id');
             $table->string('setting_state_name', 100);
             $table->string('setting_state_code', 3);
             $table->dateTime('setting_state_created');

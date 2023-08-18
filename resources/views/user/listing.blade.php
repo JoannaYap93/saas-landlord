@@ -226,12 +226,10 @@
 		//$("#user_role").hide();
 		$('.suspend').on('click', function() {
 			var id = $(this).attr('data-id');
-			console.log(id);
 			$(".modal-body #user_id").val(id);
 		});
 		$('.activate').on('click', function() {
 			var id = $(this).attr('data-id');
-			console.log(id);
 			$(".modal-body #user_id").val(id);
 		});
 

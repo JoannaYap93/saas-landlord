@@ -20,12 +20,14 @@ return new class extends Migration
                 'id' => 1,
                 'name' => 'Administrator',
                 'guard_name' => 'web',
+                'editable' => 0,
             ),
             1 => 
             array (
                 'id' => 2,
                 'name' => 'Sales Advisor',
                 'guard_name' => 'web',
+                'editable' => 0,
             ),
         ));
     }

@@ -177,7 +177,6 @@
                         
 
                     } else {
-                        console.log(data.highlited_field)
                         Swal.fire({
                             type: 'error',
                             title: 'Error!',

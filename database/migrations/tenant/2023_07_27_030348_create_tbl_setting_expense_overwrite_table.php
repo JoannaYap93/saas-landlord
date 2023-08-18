@@ -14,7 +14,7 @@ class CreateTblSettingExpenseOverwriteTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_expense_overwrite', function (Blueprint $table) {
-            $table->integer('setting_expense_overwrite_id')->primary();
+            $table->increments('setting_expense_overwrite_id');
             $table->integer('setting_expense_type_id')->nullable();
             $table->decimal('setting_expense_overwrite_value', 11, 2)->nullable();
             $table->integer('setting_expense_id')->nullable();

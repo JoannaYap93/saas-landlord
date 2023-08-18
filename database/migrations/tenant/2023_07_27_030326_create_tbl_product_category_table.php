@@ -14,7 +14,7 @@ class CreateTblProductCategoryTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_category', function (Blueprint $table) {
-            $table->integer('product_category_id')->primary();
+            $table->increments('product_category_id');
             $table->integer('product_category_parent_id')->nullable();
             $table->string('product_category_name', 45);
             $table->integer('product_category_ranking')->nullable();

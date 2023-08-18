@@ -3,6 +3,48 @@
 @section('title') Tenant Listing @endsection
 
 @section('content')
+<style>
+.feature-check label {
+  padding: 10px 20px 10px 40px;
+  border: 1px solid grey;
+  border-radius: 23px;
+  display: inline-block;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: grey;
+  position: relative;
+  font-size: 14px;
+  line-height: 1;
+}
+.feature-check label:before {
+  content: "\f00c";
+  font-family: "Font Awesome 5 Free";
+  font-size: 10px;
+  color: #fff;
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  line-height: 14px;
+  padding: 0 2px;
+  border: 1px solid grey;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.feature-check input[type="checkbox"] {
+  display: none;
+}
+
+.feature-check input[type="checkbox"]:checked + label {
+  background: green;
+  color: #FFF;
+  border-color: green;
+}
+
+.feature-check input[type="checkbox"]:checked + label:before {
+  border-color: #fff;
+}
+</style>
 <link href="{{ URL::asset('assets/libs/datatables/datatables.min.css')}}" rel="stylesheet" type="text/css" />
 
 <!-- start page title -->
@@ -88,49 +130,34 @@
 </div>
 <!-- End Page-content -->
 <!-- Modal -->
-<div class="modal fade" id="suspend" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form method="POST" action="{{ route('user_status') }}">
-				@csrf
-				<!-- <div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Suspend User Record</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div> -->
-				<div class="modal-body">
-					<h4>Suspend this user ?</h4>
-					<input type="hidden" , name="user_id" id="user_id">
-					<input type="hidden" , name="action" value="suspend">
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-danger">Suspend</button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				</div>
-			</form>
+
+<div class="modal fade" id="overwrite-module" tabindex="-1" role="dialog" aria-labelledby="overwrite-module" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel"><span class="tenant-name">Tenant Name</span><span class="small text-muted"> - Feature List</span></h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
 		</div>
+		<div class="modal-body">
+			<h5><div class="subscription-plan">Subscription Plan</div></h5>
+			<div class="row subscription-feature">
+
+			</div>
+			<h5><div class="Additional-module">Additional Feature</div></h5>
+			<div class="row feature-listing">
+				
+			</div>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary additional-feature">Overwrite Feature</button>
+		</div>
+	  </div>
 	</div>
 </div>
 
-<div class="modal fade" id="activate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form method="POST" action="{{ route('user_status') }}">
-				@csrf
-				<div class="modal-body">
-					<h4>Activate this user ?</h4>
-					<input type="hidden" , name="user_id" id="user_id">
-					<input type="hidden" , name="action" value="active">
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success">Activate</button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 <!-- End Modal -->
 @endsection
 
@@ -142,12 +169,10 @@
 		//$("#user_role").hide();
 		$('.suspend').on('click', function() {
 			var id = $(this).attr('data-id');
-			console.log(id);
 			$(".modal-body #user_id").val(id);
 		});
 		$('.activate').on('click', function() {
 			var id = $(this).attr('data-id');
-			console.log(id);
 			$(".modal-body #user_id").val(id);
 		});
 
@@ -157,7 +182,6 @@
 			e.preventDefault();
 			let free_text = $('.free_text').val();
 			$('.subdomain-datatable').DataTable().destroy();
-			console.log(free_text);
 
 			initializeDatatable(free_text);
 		});
@@ -169,11 +193,9 @@
 		})
 
 		function initializeDatatable (search = '') {
-			console.log(search);
 			var table = $('.subdomain-datatable').DataTable({
 				processing: true,
 				serverSide: true,
-				paging: false,
 				searching: false,
 				ajax: {
 					type: 'POST',
@@ -211,6 +233,92 @@
 			});
 		}
 
+		$('.subdomain-datatable').on('click', '.overwrite-feature', function () {
+			// Swal.showLoading();
+			var tenant_id = $(this).data('tenant_id');
+			$.ajax({
+				type: "GET",
+				url: "{{ route('overwrite.data') }}",
+				data: {
+					tenant_id: tenant_id 
+				},
+				dataType: "json",
+				encode: true,
+				success: function(data){  
+					// Swal.hideLoading();
+					
+					if (data.status = 200) {
+						$('#overwrite-module').modal('toggle');
+						$('.tenant-name').html(data.tenant.tenant_name)
+						$('.subscription-plan').html(data.subscription.subscription_name)
+						$('.feature-listing').html(data.feature_listing)
+						$('.subscription-feature').html(data.subscription_feature)
+						$('.additional-feature').data('tenant_id', tenant_id)
+					} else {
+						Swal.fire({
+							type: 'error',
+							title: 'Something went wrong!',
+							text: 'Please try again later!',
+						})
+					}
+				},
+				error: function(error) { 
+					Swal.fire({
+						type: 'error',
+						title: 'Something went wrong!',
+						text: 'Please try again later!',
+					})
+				}
+			})
+			// $('#overwrite-module').modal('toggle');
+		});
+
+		$('.additional-feature').on('click', function () {
+			var tenant_id = $(this).data('tenant_id');
+			var additionalFeature = [];
+			$('input[name="additional_feature[]"]').each(function(index, value) {
+				if ($(this).is(":checked") ){
+					additionalFeature.push($(this).val())
+				}
+			});
+			$.ajax({
+				type: "POST",
+				url: "{{ route('additional.feature') }}",
+				data: {
+					_token: "{{ csrf_token() }}",
+					tenant_id: tenant_id,
+					additional_feature: additionalFeature
+				},
+				dataType: "json",
+				encode: true,
+				success: function(data){  
+					// Swal.hideLoading();
+					$('#overwrite-module').modal('toggle');
+					if (data.status = 200) {
+						Swal.fire({
+							type: 'success',
+							title: 'Success!',
+							text: data.message,
+						})
+					} else {
+						Swal.fire({
+							type: 'error',
+							title: 'Something went wrong!',
+							text: 'Please try again later!',
+						})
+					}
+				},
+				error: function(error) { 
+
+					$('#overwrite-module').modal('toggle');
+					Swal.fire({
+						type: 'error',
+						title: 'Something went wrong!',
+						text: 'Please try again later!',
+					})
+				}
+			})
+		});
 	});
 </script>
 @endsection

@@ -14,7 +14,7 @@ class CreateTblUserTypeTable extends Migration
     public function up()
     {
         Schema::create('tbl_user_type', function (Blueprint $table) {
-            $table->integer('user_type_id')->primary();
+            $table->increments('user_type_id');
             $table->string('user_type_name', 45);
             $table->dateTime('user_type_cdate');
             $table->dateTime('user_type_udate');

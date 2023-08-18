@@ -14,7 +14,7 @@ class CreateTblSettingPaymentTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_payment', function (Blueprint $table) {
-            $table->integer('setting_payment_id')->primary();
+            $table->increments('setting_payment_id');
             $table->string('setting_payment_name', 45)->nullable();
             $table->boolean('is_payment_gateway')->nullable();
             $table->boolean('is_offline')->nullable();

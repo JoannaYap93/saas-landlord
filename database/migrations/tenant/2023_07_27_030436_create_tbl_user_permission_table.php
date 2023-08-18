@@ -14,7 +14,7 @@ class CreateTblUserPermissionTable extends Migration
     public function up()
     {
         Schema::create('tbl_user_permission', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->increments('id');
             $table->string('name', 100);
             $table->string('guard_name', 100);
             $table->timestamps();

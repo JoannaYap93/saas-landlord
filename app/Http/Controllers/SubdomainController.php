@@ -20,9 +20,11 @@ use App\Model\UserPlatform;
 use Illuminate\Support\Arr;
 use App\Model\TenantCompany;
 use Illuminate\Http\Request;
+use App\Model\FeatureSetting;
 use App\Mail\TenantPaymentLink;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -98,8 +100,7 @@ class SubdomainController extends Controller
                     return $picUser;
                 })
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
-                    $actionBtn = '';
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-outline-warning btn-sm overwrite-feature" data-tenant_id="' . $row->id . '">Feature List</a>';
                     return $actionBtn;
                 })
                 ->rawColumns(['action', 'pic_user', 'subscription_first_time_status', 'tenant_status'])
@@ -181,6 +182,7 @@ class SubdomainController extends Controller
                 'company_address' => $request->input('company_address'),
                 'company_reg_no' => $request->input('company_reg_no'),
                 'company_phone_no' => $request->input('company_phone_no'),
+                'created_by_user_id' => Auth::id()
             ]);
 
             // Store User in company tenant user
@@ -215,5 +217,78 @@ class SubdomainController extends Controller
                 'message' => 'Add Tenant Successfully!'
             ];
         }
+    }
+
+    public function retreiveOverWriteData(Request $request)
+    {
+        $tenantCompany = TenantCompany::with(['subscription', 'subscription.feature'])->where('id', $request->input('tenant_id'))->first();
+
+        if ($tenantCompany) {
+            $overwriteFeature = json_decode(Arr::get($tenantCompany, 'overwrite_feature', '[]'), true);
+            $featureSubscription = Arr::get($tenantCompany, 'subscription.feature');
+            $featureSubsId = $featureSubscription->pluck('feature_id')->toArray();
+            $featureCollection = FeatureSetting::get();
+            $featureListing = '';
+            $subscriptionFeature = '';
+            foreach ($featureCollection as $key => $feature) {
+                $button = '';
+
+                if (in_array($feature->feature_id, $featureSubsId)) {
+                    $subscriptionFeature .= "
+                    <div class='card col-sm-4 text-center' style='box-shadow: unset !important'>
+                        <div class='card-body'>
+                            <i class='$feature->feature_icon mb-4' style='font-size:50px'></i>
+                            <h5 class='card-title'>$feature->feature_title</h5>
+                            <p class='card-text'>$feature->feature_group</p>
+                        </div>
+                    </div>";
+                } else {
+                    if (in_array($feature->feature_slug, $overwriteFeature)) {
+                        $checkbox = "<div class='feature-check'>
+                            <input type='checkbox' id='feature-$feature->feature_id' class='additional-checkbox' value='$feature->feature_slug' name='additional_feature[]' checked>
+                            <label for='feature-$feature->feature_id'>Active</label>
+                        </div>";
+                    } else {
+                        $checkbox = "<div class='feature-check'>
+                            <input type='checkbox' id='feature-$feature->feature_id' class='additional-checkbox' value='$feature->feature_slug' name='additional_feature[]'>
+                            <label for='feature-$feature->feature_id'>Active</label>
+                        </div>";
+                    }
+                    $featureListing .= "
+                    <div class='card col-sm-4 text-center' style='box-shadow: unset !important'>
+                        <div class='card-body'>
+                            <i class='$feature->feature_icon mb-4' style='font-size:50px'></i>
+                            <h5 class='card-title'>$feature->feature_title</h5>
+                            <p class='card-text'>$feature->feature_group</p>
+                            $checkbox
+                        </div>
+                    </div>";
+                }
+            }
+            
+            return [
+                'status' => 200,
+                'tenant' => $tenantCompany,
+                'subscription' => Arr::get($tenantCompany, 'subscription'),
+                'subscription_feature' => $subscriptionFeature,
+                'feature_listing' => $featureListing,
+            ];   
+        } else {
+            return [
+                'status' => 404
+            ];
+        }
+    }
+
+    public function saveAdditionalFeature(Request $request)
+    {
+        $tenant = TenantCompany::findOrFail($request->input('tenant_id'));
+        $tenant->overwrite_feature = $request->input('additional_feature');
+        $tenant->save();
+
+        return [
+            'status' => 200,
+            'message' => 'Save Additional Feature Successfully!',
+        ];
     }
 }

@@ -14,7 +14,7 @@ class CreateTblSyncCustomerTable extends Migration
     public function up()
     {
         Schema::create('tbl_sync_customer', function (Blueprint $table) {
-            $table->integer('sync_customer_id')->primary();
+            $table->increments('sync_customer_id');
             $table->dateTime('sync_customer_created')->nullable();
             $table->dateTime('sync_customer_updated')->nullable();
             $table->string('sync_customer_company_name', 250)->nullable();

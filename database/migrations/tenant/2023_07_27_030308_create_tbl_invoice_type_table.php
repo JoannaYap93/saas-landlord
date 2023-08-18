@@ -14,7 +14,7 @@ class CreateTblInvoiceTypeTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice_type', function (Blueprint $table) {
-            $table->integer('invoice_type_id')->primary();
+            $table->increments('invoice_type_id');
             $table->string('invoice_type_name', 45);
         });
     }

@@ -45,7 +45,7 @@
                             <div class="form-group row mb-4">
                                 <label for="taskname" class="col-form-label col-lg-2">Role Name</label>
                                 <div class="col-lg-4">
-                                    <input name="name" class="form-control" type="text" value="{{ @$post->name }}" >                               
+                                    <input name="name" class="form-control" type="text" value="{{ @$post->name }}" {{ (($post == NULL) ? '' : ((@$post->editable == 0) ? 'disabled': '')) }}>  
                                 </div>
                             </div>
                         </div>

@@ -14,7 +14,7 @@ class CreateTblUserLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_user_log', function (Blueprint $table) {
-            $table->integer('user_log_id')->primary();
+            $table->increments('user_log_id');
             $table->integer('user_id');
             $table->dateTime('user_log_cdate');
             $table->string('user_log_ip', 15)->nullable();

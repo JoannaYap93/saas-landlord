@@ -72,6 +72,7 @@ class FeatureController extends Controller
                             $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-primary btn-sm mr-2 edit-status" data-module-name="'. $row->feature_title .'" data-feature-status="active" data-feature-id="'. $row->feature_id .'" >Active</a>';
                             break;
                     }
+                    $actionBtn .= '<a href="javascript:void(0)" class="btn btn-outline-success btn-sm mr-2 edit-module-charge" data-feature-id="'. $row->feature_id .'">Edit</a>';
                     return $actionBtn;
                 })
                 ->rawColumns(['action', 'feature_status'])
@@ -95,4 +96,29 @@ class FeatureController extends Controller
             'message' => 'Change status successfully!'
         ];
     } 
+
+    public function getFeatureData(Request $request)
+    {
+        $feature = FeatureSetting::findOrFail($request->input('feature_id'));
+
+        return [
+            'status' => 200,
+            'feature' => $feature,
+        ];
+    }
+
+    public function updateFeatureData(Request $request)
+    {
+        $feature = FeatureSetting::findOrFail($request->input('feature_id'));
+        $feature->feature_extra_charge = $request->input('feature_extra_charge');
+        $feature->feature_charge_per_kg = $request->input('feature_charge_per_kg');
+        $feature->feature_charge_per_year = $request->input('feature_charge_per_year');
+        $feature->feature_charge_subscription_price = $request->input('feature_charge_subscription_price');
+        $feature->save();
+
+        return [
+            'status' => 200,
+            'message' => 'Update feature successfully!'
+        ];
+    }
 }

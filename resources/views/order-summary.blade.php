@@ -145,7 +145,6 @@
 
           Swal.showLoading()
           let tenant_id = "{{ Arr::get($tenant, 'id') }}";
-          console.log(tenant_id);
           $.ajax({
               type: "POST",
               url: "{{ route('subscription.pay.order') }}",

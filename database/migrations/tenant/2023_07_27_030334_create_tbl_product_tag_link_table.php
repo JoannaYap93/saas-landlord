@@ -14,7 +14,7 @@ class CreateTblProductTagLinkTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_tag_link', function (Blueprint $table) {
-            $table->integer('product_id')->primary();
+            $table->increments('product_id');
             $table->integer('product_tag_id');
         });
     }

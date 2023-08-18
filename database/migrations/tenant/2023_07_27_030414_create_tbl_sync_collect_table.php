@@ -14,7 +14,7 @@ class CreateTblSyncCollectTable extends Migration
     public function up()
     {
         Schema::create('tbl_sync_collect', function (Blueprint $table) {
-            $table->integer('sync_collect_id')->primary();
+            $table->increments('sync_collect_id');
             $table->integer('product_id')->nullable();
             $table->integer('setting_product_size_id')->nullable();
             $table->decimal('sync_collect_quantity', 10, 4)->nullable();

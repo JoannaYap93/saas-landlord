@@ -14,7 +14,7 @@ class CreateTblClaimLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_claim_log', function (Blueprint $table) {
-            $table->integer('claim_log_id')->primary();
+            $table->increments('claim_log_id');
             $table->string('claim_log_action', 45);
             $table->integer('from_claim_status_id');
             $table->integer('to_claim_status_id');

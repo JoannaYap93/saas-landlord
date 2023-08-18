@@ -14,7 +14,7 @@ class CreateTblProductTagTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_tag', function (Blueprint $table) {
-            $table->integer('product_tag_id')->primary();
+            $table->increments('product_tag_id');
             $table->string('product_tag_name', 45);
             $table->dateTime('product_tag_created');
             $table->dateTime('product_tag_updated');

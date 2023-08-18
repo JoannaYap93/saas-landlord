@@ -14,7 +14,7 @@ class CreateTblCustomerTermTable extends Migration
     public function up()
     {
         Schema::create('tbl_customer_term', function (Blueprint $table) {
-            $table->integer('customer_term_id')->primary();
+            $table->increments('customer_term_id');
             $table->string('customer_term_name', 100);
             $table->boolean('is_deleted')->default(0);
             $table->dateTime('customer_term_created');

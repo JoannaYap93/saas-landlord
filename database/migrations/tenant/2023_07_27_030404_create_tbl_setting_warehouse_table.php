@@ -14,7 +14,7 @@ class CreateTblSettingWarehouseTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_warehouse', function (Blueprint $table) {
-            $table->integer('warehouse_id')->primary();
+            $table->increments('warehouse_id');
             $table->string('warehouse_name', 45);
             $table->enum('warehouse_status', ['active', 'inactive']);
             $table->dateTime('warehouse_cdate');

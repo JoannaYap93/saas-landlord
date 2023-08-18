@@ -14,7 +14,7 @@ class CreateTblMessageLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_message_log', function (Blueprint $table) {
-            $table->bigInteger('message_log_id')->primary();
+            $table->increments('message_log_id');
             $table->integer('user_id');
             $table->integer('customer_id');
             $table->integer('message_template_id');

@@ -41,6 +41,15 @@
                             {{-- @endcan --}}
                         </ul>
                     </li>
+
+
+                    <li class="menu-title">SALES PERSON</li>
+                    <li>
+                        <li><a href="{{ route('sales-person.index') }}">
+                            <i class="bx bx-layout"></i>Sales Person Listing</a></li>
+        
+                        <li>
+                    </li>
                     {{-- @endcanany
                     @can('user_activity_log') --}}
                     {{-- <li>

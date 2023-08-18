@@ -14,7 +14,7 @@ class CreateTblSettingSecurityPinTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_security_pin', function (Blueprint $table) {
-            $table->integer('setting_security_pin_id')->primary();
+            $table->increments('setting_security_pin_id');
             $table->string('setting_security_pin', 100);
             $table->dateTime('setting_security_pin_created');
             $table->dateTime('setting_security_pin_updated');

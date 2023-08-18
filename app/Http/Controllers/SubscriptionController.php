@@ -16,6 +16,7 @@ use Illuminate\Support\Arr;
 use App\Model\TenantCompany;
 use Illuminate\Http\Request;
 use App\Model\FeatureSetting;
+use App\Model\SubscriptionLog;
 use App\Model\SubscriptionFeature;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -168,6 +169,17 @@ class SubscriptionController extends Controller
                     ]
                 );
             }
+
+            $subscriptionLog = SubscriptionLog::create(
+                [
+                    'subscription_id' => $subscription->subscription_id,
+                    'user_id' => Auth::id(),
+                    'action' => 'Create New Subscription',
+                    'data' => $subscription,
+                    'feature' => json_encode($request->input('feature')),
+                ]
+            );
+
             return [
                 'status' => 200,
                 'message' => 'Create Subscription Plan Successfully!',
@@ -228,6 +240,17 @@ class SubscriptionController extends Controller
                     ]
                 );
             }
+
+            $subscriptionLog = SubscriptionLog::create(
+                [
+                    'subscription_id' => $subscription->subscription_id,
+                    'user_id' => Auth::id(),
+                    'action' => 'Edit Subscription',
+                    'data' => $subscription,
+                    'feature' => json_encode($request->input('feature')),
+                ]
+            );
+
             return [
                 'status' => 200,
                 'message' => 'Edit Subscription Plan Successfully!',
@@ -248,6 +271,18 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findOrFail($request->input('subscription_id'));
         $subscription->subscription_status = $request->input('subscription_status');
         $subscription->save();
+
+        $feature = SubscriptionFeature::where('subscription_id', $subscription->subscription_id)->pluck('feature_id');
+
+        $subscriptionLog = SubscriptionLog::create(
+            [
+                'subscription_id' => $subscription->subscription_id,
+                'user_id' => Auth::id(),
+                'action' => 'Change Status',
+                'data' => $subscription,
+                'feature' => $feature
+            ]
+        );
 
         return [
             'status' => 200,
@@ -370,5 +405,85 @@ class SubscriptionController extends Controller
             'status' => 200,
             'message' => 'Registration Completed!',
         ];
+    }
+
+    public function log(Request $request)
+    {
+        $subscription = Subscription::get();
+
+        return view('subscription/log', compact(['subscription']));
+    }
+
+    public function getSubscriptionLog(Request $request)
+    {
+        if ($request->ajax()) {
+            $collectionModule = FeatureSetting::get();
+            $subscriptionLog = SubscriptionLog::query();
+
+            if ($request->input('subscription_id')) {
+                $subscription_id = $request->input('subscription_id');
+                $subscriptionLog->where('subscription_id', $subscription_id);
+            }
+
+            $subscriptionLog->with(['subscription', 'user']);
+            $subscriptionLog->orderBy('created_at', 'DESC');
+            $data = $subscriptionLog->get();
+
+            
+            return datatables()->of($data)
+                ->addIndexColumn()
+                ->editColumn('subscription', function($row) {
+                    $dataLog = json_decode(Arr::get($row, 'data'), true);
+                    $subscription = Arr::get($dataLog, 'subscription_name');
+                    return $subscription;
+                })
+                ->editColumn('data', function($row) {
+                    $subscription = Arr::get($row, 'subscription.subscription_name', '');
+                    $dataLog = json_decode(Arr::get($row, 'data'), true);
+                    $subscriptionDesc = Arr::get($dataLog, 'subscription_description');
+                    $subscriptionMax = Arr::get($dataLog, 'subscription_maximum_charge_per_year');
+                    $subscriptionPrice = Arr::get($dataLog, 'subscription_price');
+                    $subscriptionChargePerKg = Arr::get($dataLog, 'subscription_charge_per_kg');
+                    $subscriptionStatus = Arr::get($dataLog, 'subscription_status');
+
+                    $subscriptionStatus = ucfirst($subscriptionStatus);
+                    $status = '';
+                    switch ($subscriptionStatus) {
+                        case 'Active':
+                            $status = "<span class='badge badge-primary font-size-11'>{$subscriptionStatus}</span>";
+                            break;
+                        case 'Disable':
+                            $status = "<span class='badge badge-warning'>{$subscriptionStatus}</span>";
+                            break;
+                    }
+
+                    // Return Data
+                    $returnData = '';
+                    $returnData .= 'Description : ' . $subscriptionDesc . '<br>';
+                    $returnData .= 'Maximum Charge Per Year : RM ' . $subscriptionMax . '<br>';
+                    $returnData .= 'Price : RM ' . $subscriptionPrice . '<br>';
+                    $returnData .= 'Charge Per Kg : RM ' . $subscriptionChargePerKg . '<br>';
+                    $returnData .= 'Status : ' . $status . '<br>';
+                    return $returnData;
+                })
+                ->editColumn('user', function($row) {
+                    $user = Arr::get($row, 'user.user_fullname', '');
+                    return $user;
+                })
+                ->editColumn('feature', function($row) use ($collectionModule){
+                    $data = $collectionModule->whereIn('feature_id', json_decode(Arr::get($row, 'feature', '[]'), true));
+                    $enable_feature = '';
+                    foreach ($data as $key => $feature) {
+                        $enable_feature .= Arr::get($feature, 'feature_title') . '<br>';
+                    }
+                    return $enable_feature;
+                })
+                ->addColumn('logging_date', function($row){
+                    $logging_date = new Carbon(Arr::get($row, 'created_at'));
+                    return $logging_date->format('d/m/Y g:i A');
+                })
+                ->rawColumns(['data', 'feature'])
+                ->make(true);
+        }
     }
 }

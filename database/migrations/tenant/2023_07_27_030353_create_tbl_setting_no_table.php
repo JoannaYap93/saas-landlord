@@ -14,7 +14,7 @@ class CreateTblSettingNoTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_no', function (Blueprint $table) {
-            $table->integer('setting_no_id')->primary();
+            $table->increments('setting_no_id');
             $table->string('setting_no_slug', 45)->nullable();
             $table->integer('setting_no_year')->nullable();
             $table->integer('setting_no_month')->nullable();

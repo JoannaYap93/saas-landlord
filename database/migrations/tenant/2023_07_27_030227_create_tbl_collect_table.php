@@ -14,7 +14,7 @@ class CreateTblCollectTable extends Migration
     public function up()
     {
         Schema::create('tbl_collect', function (Blueprint $table) {
-            $table->integer('collect_id')->primary();
+            $table->increments('collect_id');
             $table->integer('product_id')->index('product_id');
             $table->integer('setting_product_size_id');
             $table->decimal('collect_quantity', 10, 4);

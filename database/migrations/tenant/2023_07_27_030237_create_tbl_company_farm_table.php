@@ -14,7 +14,7 @@ class CreateTblCompanyFarmTable extends Migration
     public function up()
     {
         Schema::create('tbl_company_farm', function (Blueprint $table) {
-            $table->integer('company_farm_id')->primary();
+            $table->increments('company_farm_id');
             $table->string('company_farm_name', 45);
             $table->dateTime('company_farm_created');
             $table->dateTime('company_farm_updated');

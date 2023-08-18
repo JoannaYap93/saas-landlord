@@ -14,7 +14,7 @@ class CreateTblInvoiceLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice_log', function (Blueprint $table) {
-            $table->integer('invoice_log_id')->primary();
+            $table->increments('invoice_log_id');
             $table->integer('invoice_id');
             $table->dateTime('invoice_log_created');
             $table->text('invoice_log_description')->nullable();

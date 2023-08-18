@@ -14,7 +14,7 @@ class CreateTblUrlTable extends Migration
     public function up()
     {
         Schema::create('tbl_url', function (Blueprint $table) {
-            $table->integer('url_id')->primary();
+            $table->increments('url_id');
             $table->string('url_shorten', 20);
             $table->string('url_full', 150);
             $table->dateTime('url_created');

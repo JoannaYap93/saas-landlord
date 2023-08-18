@@ -14,7 +14,7 @@ class CreateTblSyncTable extends Migration
     public function up()
     {
         Schema::create('tbl_sync', function (Blueprint $table) {
-            $table->integer('sync_id')->primary();
+            $table->increments('sync_id');
             $table->dateTime('sync_created');
             $table->dateTime('sync_updated');
             $table->integer('user_id')->index('user_id');

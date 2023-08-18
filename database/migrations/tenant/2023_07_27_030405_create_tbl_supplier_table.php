@@ -14,7 +14,7 @@ class CreateTblSupplierTable extends Migration
     public function up()
     {
         Schema::create('tbl_supplier', function (Blueprint $table) {
-            $table->integer('supplier_id')->primary();
+            $table->increments('supplier_id');
             $table->string('supplier_name', 100);
             $table->string('supplier_mobile_no', 45);
             $table->string('supplier_phone_no', 45)->nullable();

@@ -14,7 +14,7 @@ class CreateTblClaimTable extends Migration
     public function up()
     {
         Schema::create('tbl_claim', function (Blueprint $table) {
-            $table->integer('claim_id')->primary();
+            $table->increments('claim_id');
             $table->date('claim_start_date');
             $table->date('claim_end_date');
             $table->string('claim_remark', 155)->nullable();

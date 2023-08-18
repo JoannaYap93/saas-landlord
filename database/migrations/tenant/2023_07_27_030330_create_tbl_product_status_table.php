@@ -14,7 +14,7 @@ class CreateTblProductStatusTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_status', function (Blueprint $table) {
-            $table->integer('product_status_id')->primary();
+            $table->increments('product_status_id');
             $table->string('product_status_name', 45);
         });
     }

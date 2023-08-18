@@ -14,7 +14,7 @@ class CreateTblCompanyTable extends Migration
     public function up()
     {
         Schema::create('tbl_company', function (Blueprint $table) {
-            $table->integer('company_id')->primary();
+            $table->increments('company_id');
             $table->string('company_name', 150);
             $table->string('company_code', 45);
             $table->dateTime('company_created');

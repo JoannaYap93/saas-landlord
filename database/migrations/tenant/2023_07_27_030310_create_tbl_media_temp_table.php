@@ -14,7 +14,7 @@ class CreateTblMediaTempTable extends Migration
     public function up()
     {
         Schema::create('tbl_media_temp', function (Blueprint $table) {
-            $table->tinyInteger('media_temp_id')->primary();
+            $table->increments('media_temp_id');
             $table->dateTime('media_temp_created');
             $table->dateTime('media_temp_updated');
         });

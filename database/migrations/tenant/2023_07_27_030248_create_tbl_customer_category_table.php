@@ -14,7 +14,7 @@ class CreateTblCustomerCategoryTable extends Migration
     public function up()
     {
         Schema::create('tbl_customer_category', function (Blueprint $table) {
-            $table->integer('customer_category_id')->primary();
+            $table->increments('customer_category_id');
             $table->string('customer_category_name', 100);
             $table->string('customer_category_slug', 100);
             $table->dateTime('customer_category_created');

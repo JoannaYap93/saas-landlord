@@ -14,7 +14,7 @@ class CreateTblInvoiceTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice', function (Blueprint $table) {
-            $table->integer('invoice_id')->primary();
+            $table->increments('invoice_id');
             $table->integer('customer_id');
             $table->string('customer_name', 150);
             $table->string('customer_address', 250);

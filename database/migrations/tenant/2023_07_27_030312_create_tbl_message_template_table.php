@@ -14,7 +14,7 @@ class CreateTblMessageTemplateTable extends Migration
     public function up()
     {
         Schema::create('tbl_message_template', function (Blueprint $table) {
-            $table->integer('message_template_id')->primary();
+            $table->increments('message_template_id');
             $table->string('message_template_name', 255);
             $table->binary('message_template_content');
             $table->string('message_template_mobile_no', 255)->nullable();

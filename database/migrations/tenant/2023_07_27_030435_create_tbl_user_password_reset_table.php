@@ -14,7 +14,7 @@ class CreateTblUserPasswordResetTable extends Migration
     public function up()
     {
         Schema::create('tbl_user_password_reset', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->increments('id');
             $table->string('email');
             $table->string('token');
             $table->dateTime('created_at')->nullable();

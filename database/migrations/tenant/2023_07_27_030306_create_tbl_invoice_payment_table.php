@@ -14,7 +14,7 @@ class CreateTblInvoicePaymentTable extends Migration
     public function up()
     {
         Schema::create('tbl_invoice_payment', function (Blueprint $table) {
-            $table->integer('invoice_payment_id')->primary();
+            $table->increments('invoice_payment_id');
             $table->integer('invoice_id');
             $table->decimal('invoice_payment_amount', 12, 2)->default(0.00);
             $table->date('invoice_payment_date');

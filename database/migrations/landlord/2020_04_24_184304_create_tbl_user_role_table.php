@@ -21,6 +21,7 @@ class CreateTblUserRoleTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 191)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->string('guard_name', 191)->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+            $table->integer('editable')->default(0);
             $table->nullableTimestamps();
             
             

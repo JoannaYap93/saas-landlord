@@ -14,7 +14,7 @@ class CreateTblSettingProductSizeTable extends Migration
     public function up()
     {
         Schema::create('tbl_setting_product_size', function (Blueprint $table) {
-            $table->integer('setting_product_size_id')->primary();
+            $table->increments('setting_product_size_id');
             $table->string('setting_product_size_name', 45);
         });
     }

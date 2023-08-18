@@ -14,7 +14,7 @@ class CreateTblDeliveryOrderTable extends Migration
     public function up()
     {
         Schema::create('tbl_delivery_order', function (Blueprint $table) {
-            $table->integer('delivery_order_id')->primary();
+            $table->increments('delivery_order_id');
             $table->string('delivery_order_no', 45)->nullable();
             $table->dateTime('delivery_order_created');
             $table->dateTime('delivery_order_updated');

@@ -14,7 +14,7 @@ class CreateTblProductStockTransferTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_stock_transfer', function (Blueprint $table) {
-            $table->integer('product_stock_transfer_id')->primary();
+            $table->increments('product_stock_transfer_id');
             $table->string('product_stock_transfer_description', 45);
             $table->string('product_stock_transfer_remark', 45)->nullable();
             $table->integer('product_stock_transfer_qty');

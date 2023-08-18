@@ -14,7 +14,7 @@ class CreateTblProductStockWarehouseTable extends Migration
     public function up()
     {
         Schema::create('tbl_product_stock_warehouse', function (Blueprint $table) {
-            $table->integer('product_stock_warehouse_id')->primary();
+            $table->increments('product_stock_warehouse_id');
             $table->integer('warehouse_id');
             $table->integer('product_id');
             $table->integer('setting_product_size_id');

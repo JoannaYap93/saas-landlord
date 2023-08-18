@@ -22,7 +22,8 @@ class TenantCompany extends Model
         'company_phone_no',
         'tenant_status',
         'subscription_first_time_status',
-        'created_by_user_id'
+        'created_by_user_id',
+        'overwrite_feature'
     ];
 
     public function subscription()

@@ -14,7 +14,7 @@ class CreateTblCustomerLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_customer_log', function (Blueprint $table) {
-            $table->integer('customer_log_id')->primary()->unique();
+            $table->increments('customer_log_id');
             $table->integer('customer_id');
             $table->dateTime('customer_log_created');
             $table->dateTime('customer_log_updated');

@@ -14,7 +14,7 @@ class CreateTblCompanyLandTable extends Migration
     public function up()
     {
         Schema::create('tbl_company_land', function (Blueprint $table) {
-            $table->integer('company_land_id')->primary();
+            $table->increments('company_land_id');
             $table->string('company_land_name', 150);
             $table->integer('company_land_category_id')->default(0);
             $table->integer('company_id');

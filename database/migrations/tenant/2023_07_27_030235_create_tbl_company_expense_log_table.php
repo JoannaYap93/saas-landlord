@@ -14,7 +14,7 @@ class CreateTblCompanyExpenseLogTable extends Migration
     public function up()
     {
         Schema::create('tbl_company_expense_log', function (Blueprint $table) {
-            $table->integer('company_expense_log_id')->primary()->unique();
+            $table->increments('company_expense_log_id');
             $table->integer('company_expense_id')->nullable();
             $table->dateTime('company_expense_log_created')->nullable();
             $table->text('company_expense_log_description')->nullable();

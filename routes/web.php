@@ -46,6 +46,8 @@ Route::group(['prefix' => 'subdomain'], function () {
         Route::get('listing', 'SubdomainController@listing')->name('subdomain_listing');
         Route::get('add', 'SubdomainController@add_view')->name('subdomain_add');
         Route::post('add-save', 'SubdomainController@add')->name('subdomain_save');
+        Route::get('overwrite-data', 'SubdomainController@retreiveOverWriteData')->name('overwrite.data');
+        Route::post('additional-feature', 'SubdomainController@saveAdditionalFeature')->name('additional.feature');
     // });
 });
 
@@ -55,7 +57,15 @@ Route::group(['prefix' => 'feature'], function () {
         Route::post('listing/datatable', 'FeatureController@getFeature')->name('feature.datatable');
         Route::get('listing', 'FeatureController@index')->name('feature.index');
         Route::post('change-status', 'FeatureController@changeStatus')->name('feature.change-status');
+        Route::get('feature-data', 'FeatureController@getFeatureData')->name('feature.data');
+        Route::post('feature-update', 'FeatureController@updateFeatureData')->name('feature.update.data');
     // });
+});
+
+//Sales person listing
+Route::group(['prefix' => 'sales-person'], function () {
+    Route::post('listing/datatable', 'SalesPersonController@getSalesPerson')->name('sales-person.datatable');
+    Route::get('listing', 'SalesPersonController@index')->name('sales-person.index');
 });
 
 //Subscription
@@ -70,6 +80,10 @@ Route::group(['prefix' => 'subscription'], function () {
         Route::get('edit/{subscription_id}', 'SubscriptionController@edit')->name('subscription.edit.view');
         Route::post('store-edit', 'SubscriptionController@storeEdit')->name('subscription.edit.save');
         Route::post('change-status', 'SubscriptionController@changeStatus')->name('subscription.change-status');
+
+        // Subscription Log
+        Route::post('log/datatable', 'SubscriptionController@getSubscriptionLog')->name('subscription.log.datatable');
+        Route::get('log', 'SubscriptionController@log')->name('subscription.log.view');
     // });
 });
 

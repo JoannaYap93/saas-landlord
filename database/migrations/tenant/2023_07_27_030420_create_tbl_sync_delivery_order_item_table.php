@@ -14,7 +14,7 @@ class CreateTblSyncDeliveryOrderItemTable extends Migration
     public function up()
     {
         Schema::create('tbl_sync_delivery_order_item', function (Blueprint $table) {
-            $table->integer('sync_delivery_order_item_id')->primary();
+            $table->increments('sync_delivery_order_item_id');
             $table->integer('sync_delivery_order_id');
             $table->integer('product_id');
             $table->integer('setting_product_size_id');

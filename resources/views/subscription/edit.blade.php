@@ -147,7 +147,6 @@
                             title: 'Success!',
                             html: data.message,
                         }).then((result) => {
-                            console.log(result)
                             if (result.value) {
                                 window.location.href = "{{ route('subscription.index') }}";
                             }
@@ -155,7 +154,6 @@
                         
 
                     } else {
-                        console.log(data.highlited_field)
                         Swal.fire({
                             type: 'error',
                             title: 'Error!',

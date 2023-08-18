@@ -28,6 +28,7 @@ return new class extends Migration
             $table->enum('subscription_first_time_status', ['paid', 'unpaid'])->default('unpaid');
             $table->enum('tenant_status', ['active', 'pending', 'suspended'])->default('active');
             $table->integer('created_by_user_id')->default(0);
+            $table->longText('overwrite_feature')->nullable();
             $table->timestamps();
         });
     }

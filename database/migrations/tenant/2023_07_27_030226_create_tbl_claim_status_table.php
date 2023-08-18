@@ -14,7 +14,7 @@ class CreateTblClaimStatusTable extends Migration
     public function up()
     {
         Schema::create('tbl_claim_status', function (Blueprint $table) {
-            $table->integer('claim_status_id')->primary();
+            $table->increments('claim_status_id');
             $table->string('claim_status_name', 45);
             $table->string('claim_approval_step_id_next', 45);
             $table->boolean('is_editable')->default(0);
