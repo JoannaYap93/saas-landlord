@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Model\SubscriptionFeature;
 use Spatie\Permission\Models\Role;
+use App\Model\SubscriptionTransaction;
 use Illuminate\Database\Eloquent\Model;
 
 class TenantCompany extends Model
@@ -39,5 +40,10 @@ class TenantCompany extends Model
     public function tenancy()
     {
         return $this->hasOne(Tenant::class, 'id', 'tenant_code');
+    }
+
+    public function transaction()
+    {
+        return $this->hasMany(SubscriptionTransaction::class, 'tenant_id');
     }
 }

@@ -210,7 +210,7 @@
 
 			let feature_id = $(this).data('feature-id');
 			let feature_status = $(this).data('feature-status');
-			if ($(this).data('status') == 'disable') {
+			if (feature_status == 'active') {
 				alertTitle = 'Active Feature';
 				alertText = `Are you sure u want to enable ${moduleTitle}?`;
 				alertBtnText = 'Enable';

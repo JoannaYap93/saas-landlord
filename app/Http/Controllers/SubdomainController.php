@@ -45,22 +45,28 @@ class SubdomainController extends Controller
     public function getSubdomain(Request $request)
     {
         if ($request->ajax()) {
+            $userRole = Auth::user()->roles[0]->id;
             $tenantCompany = TenantCompany::query();
             $tenantCompany->with(['tenancy', 'subscription', 'pic_user']);
 
             if ($request->input('search')) {
                 $search = $request->input('search');
-                $tenantCompany->where('tenant_name', 'LIKE', "%{$search}%");
-                $tenantCompany->orWhere('tenant_code', 'LIKE', "%{$search}%");
-                $tenantCompany->orWhere('company_name', 'LIKE', "%{$search}%");
-                $tenantCompany->orWhere('referral_code', 'LIKE', "%{$search}%");
-                $tenantCompany->orWhereHas('subscription', function ($query) use ($search) {
-                    $query->where('subscription_name', 'LIKE', "%{$search}%");
+                $tenantCompany->where(function($query) use ($search){
+                    $query->where('tenant_name', 'LIKE', "%{$search}%");
+                    $query->orWhere('company_name', 'LIKE', "%{$search}%");
+                    $query->orWhereHas('subscription', function ($query) use ($search) {
+                        $query->where('subscription_name', 'LIKE', "%{$search}%");
+                    });
+                    $query->orWhereHas('pic_user', function ($query) use ($search) {
+                        $query->where('user_email', 'LIKE', "%{$search}%");
+                        $query->orWhere('user_fullname', 'LIKE', "%{$search}%");
+                    });
                 });
-                $tenantCompany->orWhereHas('pic_user', function ($query) use ($search) {
-                    $query->where('user_email', 'LIKE', "%{$search}%");
-                    $query->orWhere('user_fullname', 'LIKE', "%{$search}%");
-                });
+            }
+
+            if ($userRole == 2) {
+                $salesPersonCode = Auth::user()->referral_code;
+                $tenantCompany->where('referral_code', $salesPersonCode);
             }
 
             $data = $tenantCompany->get();
@@ -73,10 +79,10 @@ class SubdomainController extends Controller
                     $tenantStatus = ucfirst($row->tenant_status);
                     switch ($row->tenant_status) {
                         case 'active':
-                            $status = "<span class='badge badge-primary font-size-11'>{$tenantStatus}</span>";
+                            $status = "<span class='badge badge-primary font-size-11'>" . ucfirst($tenantStatus). "</span>";
                             break;
                         case 'disable':
-                            $status = "<span class='badge badge-warning'>{$tenantStatus}</span>";
+                            $status = "<span class='badge badge-warning'>" . ucfirst($tenantStatus). "</span>";
                             break;
                     }
                     return $status;
@@ -101,6 +107,8 @@ class SubdomainController extends Controller
                 })
                 ->addColumn('action', function($row){
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-outline-warning btn-sm overwrite-feature" data-tenant_id="' . $row->id . '">Feature List</a>';
+                    $actionBtn .= '<a href="' . env('TENANT_URL') . '/' . $row->tenant_code . '/sales-person-login/' . Crypt::encryptString(Auth::id()) . '" class="ml-2 edit btn btn-outline-primary btn-sm bypass-login" target="_blank">Login</a>';
+
                     return $actionBtn;
                 })
                 ->rawColumns(['action', 'pic_user', 'subscription_first_time_status', 'tenant_status'])
@@ -115,9 +123,14 @@ class SubdomainController extends Controller
 
     public function add_view(Request $request)
     {
+        $referralCode = '';
+        $userRole = Auth::user()->roles[0]->id;
+        if ($userRole == 2) {
+            $referralCode = Auth::user()->referral_code;
+        }
         
         $subscription = Subscription::where('subscription_status', 'active')->get();
-        return view('subdomain_setup/add', compact('subscription'));
+        return view('subdomain_setup/add', compact('subscription', 'referralCode'));
     }
 
     public function add(Request $request)

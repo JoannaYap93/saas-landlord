@@ -23,5 +23,16 @@ class SubscriptionTransaction extends Model
         'transaction_response',
         'transaction_cc_token',
         'transaction_status',
+        'transaction_type'
     ];
+
+    public function subscription_plan()
+    {
+        return $this->belongsTo('App\Model\Subscription', 'subscription_id');
+    }
+    
+    public function tenant()
+    {
+        return $this->belongsTo('App\Model\TenantCompany', 'tenant_id');
+    }
 }

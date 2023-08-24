@@ -19,8 +19,6 @@ return [
     'central_domains' => [
         '127.0.0.1',
         'localhost',
-        'saas-tenant.test',
-        'saas-landlord.test',
     ],
 
     /**
@@ -53,7 +51,7 @@ return [
          * Tenant database names are created like this:
          * prefix + tenant_id + suffix.
          */
-        'prefix' => 'saas_tenant_',
+        'prefix' => 'FARMBIZ_',
         'suffix' => '',
 
         /**

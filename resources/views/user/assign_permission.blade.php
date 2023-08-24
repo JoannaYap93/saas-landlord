@@ -64,7 +64,7 @@
                                     <ul style="padding:0">
                                         <li class="custom-control custom-checkbox">
                                             <input type="checkbox" id="check_all" class="custom-control-input check" >
-                                            <label class="custom-control-label" for="check_all" ></label>
+                                            <label class="custom-control-label" for="check_all" >Check All</label>
                                         </li>
                                     </ul>
                                 </div>

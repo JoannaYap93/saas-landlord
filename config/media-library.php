@@ -15,12 +15,6 @@ return [
     'max_file_size' => 1024 * 1024 * 10, // 10MB
 
     /*
-     * This queue connection will be used to generate derived and responsive images.
-     * Leave empty to use the default queue connection.
-     */
-    'queue_connection_name' => env('QUEUE_CONNECTION', 'sync'),
-
-    /*
      * This queue will be used to generate derived and responsive images.
      * Leave empty to use the default queue.
      */
@@ -34,15 +28,7 @@ return [
     /*
      * The fully qualified class name of the media model.
      */
-    'media_model' => Spatie\MediaLibrary\MediaCollections\Models\Media::class,
-
-    /*
-     * When enabled, media collections will be serialised using the default
-     * laravel model serialization behaviour.
-     * 
-     * Keep this option disabled if using Media Library Pro components (https://medialibrary.pro)
-     */
-    'use_default_collection_serialization' => false,
+    'media_model' => App\Model\Media::class,
 
     /*
      * The fully qualified class name of the model used for temporary uploads.
@@ -52,7 +38,7 @@ return [
     'temporary_upload_model' => Spatie\MediaLibraryPro\Models\TemporaryUpload::class,
 
     /*
-     * When enabled, Media Library Pro will only process temporary uploads that were uploaded
+     * When enabled, Media Library Pro will only process temporary uploads there were uploaded
      * in the same session. You can opt to disable this for stateless usage of
      * the pro components.
      */
@@ -66,39 +52,36 @@ return [
     /*
      * This is the class that is responsible for naming generated files.
      */
-    'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
+    // 'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
-
-    /*
-     * Here you can specify which path generator should be used for the given class.
-     */
-    'custom_path_generators' => [
-        // Model::class => PathGenerator::class
-        // or
-        // 'model_morph_alias' => PathGenerator::class
-    ],
+    // 'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
 
     /*
      * When urls to files get generated, this class will be called. Use the default
      * if your files are stored locally above the site root or on s3.
      */
-    'url_generator' => Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
+    // 'url_generator' => Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
+    'url_generator' => App\Core\MediaLibrary\GCSUrlGenerator::class,
 
     /*
      * Moves media on updating to keep path consistent. Enable it only with a custom
      * PathGenerator that uses, for example, the media UUID.
      */
-    'moves_media_on_update' => false,
+    // 'moves_media_on_update' => false,
 
     /*
      * Whether to activate versioning when urls to files get generated.
      * When activated, this attaches a ?v=xx query string to the URL.
      */
-    'version_urls' => false,
+    'version_urls' => true,
+
+    /*
+     * The class that contains the strategy for determining a media file's path.
+     */
+    'path_generator' => App\Core\MediaLibrary\MediaLibraryPathGenerator::class,
 
     /*
      * The media library will try to optimize all converted images by removing
@@ -133,16 +116,6 @@ return [
             '-mt', // multithreading for some speed improvements.
             '-q 90', //quality factor that brings the least noticeable changes.
         ],
-        Spatie\ImageOptimizer\Optimizers\Avifenc::class => [
-            '-a cq-level=23', // constant quality level, lower values mean better quality and greater file size (0-63).
-            '-j all', // number of jobs (worker threads, "all" uses all available cores).
-            '--min 0', // min quantizer for color (0-63).
-            '--max 63', // max quantizer for color (0-63).
-            '--minalpha 0', // min quantizer for alpha (0-63).
-            '--maxalpha 63', // max quantizer for alpha (0-63).
-            '-a end-usage=q', // rate control mode set to Constant Quality mode.
-            '-a tune=ssim', // SSIM as tune the encoder for distortion metric.
-        ],
     ],
 
     /*
@@ -151,7 +124,6 @@ return [
     'image_generators' => [
         Spatie\MediaLibrary\Conversions\ImageGenerators\Image::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Webp::class,
-        Spatie\MediaLibrary\Conversions\ImageGenerators\Avif::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Svg::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Video::class,
@@ -204,13 +176,14 @@ return [
          */
         'extra_headers' => [
             'CacheControl' => 'max-age=604800',
+            'ACL' => 'public-read'
         ],
     ],
 
     'responsive_images' => [
         /*
          * This class is responsible for calculating the target widths of the responsive
-         * images. By default we optimize for filesize and create variations that each are 30%
+         * images. By default we optimize for filesize and create variations that each are 20%
          * smaller than the previous one. More info in the documentation.
          *
          * https://docs.spatie.be/laravel-medialibrary/v9/advanced-usage/generating-responsive-images
@@ -235,7 +208,7 @@ return [
      * the Media Library Pro Vue and React components to move uploaded files
      * in a S3 bucket to their right place.
      */
-    'enable_vapor_uploads' => env('ENABLE_MEDIA_LIBRARY_VAPOR_UPLOADS', false),
+    // 'enable_vapor_uploads' => env('ENABLE_MEDIA_LIBRARY_VAPOR_UPLOADS', false),
 
     /*
      * When converting Media instances to response the media library will add
@@ -252,5 +225,5 @@ return [
      * You can specify a prefix for that is used for storing all media.
      * If you set this to `/my-subdir`, all your media will be stored in a `/my-subdir` directory.
      */
-    'prefix' => env('MEDIA_PREFIX', ''),
+    // 'prefix' => env('MEDIA_PREFIX', ''),
 ];

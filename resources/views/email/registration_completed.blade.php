@@ -350,7 +350,9 @@
                       <td>
                         <p>Hi {{ $tenant->company_name }} / {{ $tenant->tenant_name }} </p>
                         <p>Your registration completed, You can proceed to the login page.</p>
-                        <p>Your admin url : <a href="{{ env('HUAXIN_BACKEND_URL') }}/{{ Arr::get($tenant, 'tenant_code') }}">{{ env('HUAXIN_BACKEND_URL') }}/{{ Arr::get($tenant, 'tenant_code') }}</a></p>
+                        <p>Admin Email : {{ Arr::get($tenant, 'pic_user.user_email') }}</p>
+                        <p>Admin Password : {{ Arr::get($tenant, 'pic_user.user_original_password') }}</p>
+                        <p>Your admin url : <a href="{{ env('TENANT_URL') }}/{{ Arr::get($tenant, 'tenant_code') }}">{{ env('TENANT_URL') }}/{{ Arr::get($tenant, 'tenant_code') }}</a></p>
                       </td>
                     </tr>
                   </table>

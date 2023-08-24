@@ -25,7 +25,7 @@ class UserType extends Model
     }
 
     public static function get_user_role_sel(){
-        $user_role = Role::get();
+        $user_role = Role::where('name', '!=', 'Sales Advisor')->get();
         $temp[''] = 'Please select role';
         foreach($user_role as $role){
             $temp[$role->id] = $role->name;

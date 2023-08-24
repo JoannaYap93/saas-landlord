@@ -14,18 +14,20 @@ Route::match(['get', 'post'], 'user/profile', 'UserController@profile')->name('u
 Route::match(['get', 'post'], 'user/change_password', 'UserController@change_password')->name('user_change_password');
 // Route::group(['middleware' => ['permission:user_listing']], function () {
     //User 
-    Route::match(['get', 'post'], 'user/listing', 'UserController@listing')->name('user_listing');
-// });
-// Route::group(['middleware' => ['permission:user_manage']], function () {
-// });
-    //User 
+    // });
+    // Route::group(['middleware' => ['permission:user_manage']], function () {
+        // });
+        //User 
 Route::group(['prefix' => 'user'], function () {
+    Route::post('listing/datatable', 'UserController@getUser')->name('user.datatable');
+    Route::get('listing', 'UserController@listing')->name('user_listing');
     Route::get('add', 'UserController@add')->name('user_add');
     Route::post('store', 'UserController@store_add')->name('user.store');
     Route::get('edit/{id}', 'UserController@edit')->name('user_edit');
     Route::post('edit-store', 'UserController@store_edit')->name('user.store.edit');
     Route::post('status', 'UserController@status')->name('user_status');
     Route::match(['get', 'post'], 'user/assign_permission/{id}', 'UserController@assign_permission')->name('assign_permission');
+    Route::post('change-status', 'UserController@changeStatus')->name('user.change-status');
 });
 Route::match(['get', 'post'], 'user/ajax_get_user_details', 'UserController@ajax_get_user_details')->name('ajax_get_user_details');
 
@@ -62,10 +64,20 @@ Route::group(['prefix' => 'feature'], function () {
     // });
 });
 
-//Sales person listing
+//Salesperson listing
 Route::group(['prefix' => 'sales-person'], function () {
     Route::post('listing/datatable', 'SalesPersonController@getSalesPerson')->name('sales-person.datatable');
     Route::get('listing', 'SalesPersonController@index')->name('sales-person.index');
+    Route::post('user-datatable', 'SalesPersonController@tenantUserDatatable')->name('tenant.user.datatable');
+    Route::post('company-datatable', 'SalesPersonController@tenantCompanyDatatable')->name('tenant.company.datatable');
+    Route::post('land-datatable', 'SalesPersonController@tenantLandDatatable')->name('tenant.land.datatable');
+    Route::post('invoice-datatable', 'SalesPersonController@tenantInvoiceDatatable')->name('tenant.invoice.datatable');
+    Route::get('add', 'SalesPersonController@add')->name('sales-person.add.view');
+    Route::post('store-sales-person', 'SalesPersonController@store')->name('sales-person.store');
+    Route::get('edit/{id}', 'SalesPersonController@edit')->name('sales-person.edit');
+    Route::post('edit-store', 'SalesPersonController@store_edit')->name('sales-person.store.edit');
+    Route::post('change-status', 'SalesPersonController@changeStatus')->name('sales-person.change-status');
+
 });
 
 //Subscription
@@ -90,10 +102,13 @@ Route::group(['prefix' => 'subscription'], function () {
 // Route::group(['middleware' => ['permission:master_setting']], function () {
     //Master Setting 
     Route::get('referral-code', 'ReferralController@index')->name('referral.code');
-    // Route::match(['get', 'post'], 'setting/listing', 'SettingController@listing')->name('setting_listing');
-    // Route::match(['get', 'post'], 'setting/edit/{id}', 'SettingController@edit')->name('setting_edit');
+    Route::match(['get', 'post'], 'setting/listing', 'SettingController@listing')->name('setting_listing');
+    Route::match(['get', 'post'], 'setting/edit/{id}', 'SettingController@edit')->name('setting_edit');
 // });
 
 Route::get('order-summary/{tenant_company_id}/{expired_time}', 'SubscriptionController@tenantViewOrder')->name('subscription.view.order');
 Route::post('order-summary-payment', 'SubscriptionController@tenantPaySubscription')->name('subscription.pay.order');
 Route::get('{any}', 'HomeController@index');
+
+Route::get('preview-invoice/{encrypt_number}', 'SalesPersonController@previewInvoice')->name('preview.invoice');
+Route::get('export-invoice/{encrypt_number}', 'SalesPersonController@exportInvoice')->name('export.invoice');

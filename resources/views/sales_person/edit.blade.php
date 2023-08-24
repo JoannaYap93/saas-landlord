@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') Edit User @endsection
+@section('title') Edit Salesperson @endsection
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/libs/select2/select2.min.css')}}">
@@ -14,11 +14,11 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0 font-size-18">Edit User</h4>
+            <h4 class="mb-0 font-size-18">Edit Salesperson</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                        <a href="javascript: void(0);">User</a>
+                        <a href="javascript: void(0);">Salesperson</a>
                     </li>
                     <li class="breadcrumb-item active">Form</li>
                 </ol>
@@ -40,7 +40,7 @@
             @csrf
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">User Details</h4>
+                    <h4 class="card-title mb-4">Salesperson Details</h4>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -48,7 +48,7 @@
                                 <input name="user_email" type="email" class="form-control" value="{{ Arr::get($user, 'user_email') }}">
                             </div>
                             <div class="form-group">
-                                <label for="password">Password<span class="text-danger">*</span></label>
+                                <label for="password">Password</label>
                                 <input name="password" type="password" class="form-control" value="">
                             </div>
                             <div class="form-group">
@@ -83,15 +83,6 @@
                                     <input name="user_dob" type="text" class="form-control" id="datepicker" placeholder="yyyy-mm-dd" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-autoclose="true" value="{{ Arr::get($user, 'user_dob') }}">
                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                 </div>
-                            </div>
-                            <div class="form-group" id="user_role">
-                                <label class="control-label">User Role</label>
-                                <select class="form-control" name="user_role_id">
-                                    <option value="">Please select role</option>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->id }}" {{ ($user_role->id == $role->id ? 'selected' : '')}}>{{ $role->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -159,7 +150,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('user.store.edit') }}",
+                url: "{{ route('sales-person.store.edit') }}",
                 data: formData + '&user_id=' + userId,
                 dataType: "json",
                 encode: true,
@@ -171,7 +162,7 @@
                             html: data.message,
                         }).then((result) => {
                             if (result.value) {
-                                window.location.href = "{{ route('user_listing') }}";
+                                window.location.href = "{{ route('sales-person.index') }}";
                             }
                         });
                         

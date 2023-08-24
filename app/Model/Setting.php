@@ -2,11 +2,15 @@
 
 namespace App\Model;
 
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Setting extends Model
+class Setting extends Model implements HasMedia
 {
+
+    use InteractsWithMedia;
     protected $table = 'tbl_setting';
     protected $primaryKey = 'setting_id';
     public $timestamps = false;

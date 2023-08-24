@@ -41,14 +41,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="password">Referral Code<span class="text-danger"></span></label>
-                                <input name="referral_code" type="text" class="form-control" value="">
+                                <input name="referral_code" type="text" class="form-control" value="{{ $referralCode }}" {{ ($referralCode) ? 'readonly' : ''}}>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="user_email">Tenant Code<span class="text-danger">*</span> 
                                     <small id="passwordHelpInline" class="text-muted">
-                                        {{ env('HUAXIN_BACKEND_URL') }}/<span class="dynamic_domain">TenantCode</span>
+                                        {{ env('TENANT_URL') }}/<span class="dynamic_domain">TenantCode</span>
                                     </small>
                                 </label>
                                 <input name="tenant_code" type="text" class="form-control domain_name" value="" >

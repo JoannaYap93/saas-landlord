@@ -13,45 +13,74 @@ class SettingController extends Controller
     {
         $this->middleware('auth');
     }
-    
-    public function listing(Request $request){
-        $search = array();
+
+    public function listing(Request $request)
+    {
         $perpage = 15;
-        $records = Setting::get_record($search, $perpage);
-        return view('setting/listing', compact('records','search'));
+
+        if ($request->isMethod('post')) {
+            $submit_type = $request->input('submit');
+            switch ($submit_type) {
+                case 'search':
+                    session(['filter_setting' => [
+                        'freetext' => $request->input('freetext'),
+                    ]]);
+                    break;
+                case 'reset':
+                    session()->forget('filter_setting');
+                    break;
+            }
+        }
+        $search = session('filter_setting') ?? array();
+
+        return view('setting.listing', [
+            'submit' => route('setting_listing'),
+            'records' => Setting::get_record($search, $perpage),
+            'search' => $search
+        ]);
     }
 
-    public function edit(Request $request, $setting_id){
-        $validator = null;
-        $post = $setting_detail =  Setting::find($setting_id);
-       
-        if(!$setting_detail){
-            Session::flash('fail_msg', 'Invalid Roles, Please try again later.');
-            return redirect('/');
-        }
-        if($setting_detail->is_editable == 0){
-            Session::flash('fail_msg', 'Error, Setting can\'t be edit'); 
-            return redirect()->route('setting_listing');
-        }
-        if($request->isMethod('post')){
-            $validator = Validator::make($request->all(), [
+    public function edit(Request $request, $setting_id)
+    {
+
+        $setting = Setting::find($setting_id);
+        $validation = null;
+
+        if ($request->isMethod('post')) {
+            $validation = Validator::make($request->all(), [
                 'setting_value' => 'required',
             ])->setAttributeNames([
-                'setting_value' => 'Setting Value',
+                'setting_value' => 'Setting Value'
             ]);
-            if (!$validator->fails()) {
-                $setting_detail->update([
-                    'setting_value' => $request->input('setting_value')
+            if (!$validation->fails()) {
+                if ($setting->setting_type == 'file') {
+                    if ($request->file('setting_value')) {
+                        $setting->clearMediaCollection('setting');
+                        $setting->addMediaFromRequest('setting_value')->toMediaCollection('setting');
+                        if ($setting->hasMedia('setting')) {
+                            $value = $setting->getFirstMediaUrl('setting');
+                        } else {
+                            $value = 'image';
+                        }
+                    }
+                } else {
+                    $value = $request->input('setting_value') ?? '';
+                }
+
+                $setting->update([
+                    'setting_value' => $value,
                 ]);
-                Session::flash('success_msg', 'Successfully updated Setting.'); 
-                return redirect()->route('setting_listing');
+
+                return redirect()->route('setting_listing')->with('success_msg', 'Setting ' . $request->input('setting_slug') . ' updated');
             }
-            $post = (object) $request->all();
         }
-        return view('setting/form', [
-            'submit'=> route('setting_edit',$setting_id),
-            'title'=> 'Edit',
-            'post'=> $post,
-        ])->withErrors($validator);
+
+        return view('setting.form', [
+            'submit' => route('setting_edit', $setting_id),
+            'post' => $setting,
+            'edit' => true,
+            'type' => 'Edit',
+            'title' => 'Edit',
+        ])->withErrors($validation);
     }
 }
