@@ -21,6 +21,7 @@ class CreateTblSettingTable extends Migration
             $table->increments('setting_id');
             $table->string('setting_slug', 150)->charset('latin1')->collation('latin1_swedish_ci');
             $table->string('setting_value', 150)->charset('latin1')->collation('latin1_swedish_ci');
+            $table->string('setting_type', 150);
             $table->string('setting_description', 150)->charset('latin1')->collation('latin1_swedish_ci');
             $table->integer('is_editable');
             

@@ -125,10 +125,10 @@ return new class extends Migration
             ),
             12 => 
             array (
-                'setting_type' => 'url',
+                'setting_type' => 'text',
                 'setting_id' => 13,
                 'setting_slug' => 'company_website',
-                'setting_value' => 'www.doorandooran.com',
+                'setting_value' => '',
                 'setting_description' => 'Company Website',
                 'is_editable' => 1,
             ),

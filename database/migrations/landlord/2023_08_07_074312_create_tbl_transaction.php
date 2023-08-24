@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('transaction_response')->nullable();
             $table->string('transaction_cc_token')->nullable();
             $table->enum('transaction_status', ['Pending', 'Processing', 'Cancelled', 'Paid'])->default('Pending');
+            $table->enum('transaction_type', ['first_time', 'monthly'])->nullable();
             $table->timestamps();
         });
     }

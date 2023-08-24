@@ -17,6 +17,7 @@ return new class extends Migration
             $table->increments('tenant_user_id');
             $table->string('user_email', 100);
             $table->string('password', 100);
+            $table->string('user_original_password', 100)->nullable();
             $table->string('user_fullname', 100);
             $table->string('user_profile_photo', 100)->nullable();
             $table->string('user_nric', 100)->nullable();
