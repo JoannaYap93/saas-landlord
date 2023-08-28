@@ -107,7 +107,7 @@ class SubdomainController extends Controller
                 })
                 ->addColumn('action', function($row){
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-outline-warning btn-sm overwrite-feature" data-tenant_id="' . $row->id . '">Feature List</a>';
-                    $actionBtn .= '<a href="' . env('TENANT_URL') . '/' . $row->tenant_code . '/sales-person-login/' . Crypt::encryptString(Auth::id()) . '" class="ml-2 edit btn btn-outline-primary btn-sm bypass-login" target="_blank">Login</a>';
+                    $actionBtn .= '<a href="' . env('TENANT_URL') . '/' . $row->tenant_code . '/sales-person-login/' . Auth::id() . '" class="ml-2 edit btn btn-outline-primary btn-sm bypass-login" target="_blank">Login</a>';
 
                     return $actionBtn;
                 })
@@ -201,6 +201,7 @@ class SubdomainController extends Controller
             // Store User in company tenant user
             $user = TenantUser::create([
                 'user_email' => $request->input('user_email'),
+                'user_original_password' => $request->input('password'),
                 'password' => Hash::make($request->input('password')),
                 'user_fullname' => $request->input('full_name'),
                 'user_gender' => $request->input('gender'),

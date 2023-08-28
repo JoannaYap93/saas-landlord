@@ -126,7 +126,7 @@
 						{{-- Data table for user --}}
 						<div class="tab-pane active" id="user" role="tabpanel">
 							<div class="table-responsive">
-								<table class="user-datatable table table-nowrap">
+								<table class="user-datatable table table-nowrap w-100">
 									<thead class="thead-light">
 										<tr>
 											<th scope="col" style="width: 70px;">#</th>
@@ -144,7 +144,7 @@
 						{{-- Data table for company --}}
 						<div class="tab-pane" id="company" role="tabpanel" aria-labelledby="company-tab">  
 							<div class="table-responsive">
-								<table class="company-datatable table table-nowrap">
+								<table class="company-datatable table table-nowrap w-100">
 									<thead class="thead-light">
 										<tr>
 											<th scope="col" style="width: 70px;">#</th>
@@ -164,7 +164,7 @@
 						{{-- Data table for land --}}
 						<div class="tab-pane" id="land" role="tabpanel" aria-labelledby="land-tab">
 							<div class="table-responsive">
-								<table class="land-datatable table table-nowrap">
+								<table class="land-datatable table table-nowrap w-100">
 									<thead class="thead-light">
 										<tr>
 											<th scope="col" style="width: 70px;">#</th>
@@ -183,7 +183,7 @@
 						{{-- Data table for invoice --}}
 						<div class="tab-pane" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
 							<div class="table-responsive">
-								<table class="invoice-datatable table table-nowrap">
+								<table class="invoice-datatable table table-nowrap w-100">
 									<thead class="thead-light">
 										<tr>
 											<th scope="col" style="width: 70px;">#</th>

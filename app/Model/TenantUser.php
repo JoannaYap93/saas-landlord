@@ -17,6 +17,7 @@ class TenantUser extends Model
 
     protected $fillable = [
         'user_email', 
+        'user_original_password',
         'password', 
         'user_fullname', 
         'user_profile_photo', 
@@ -45,6 +46,5 @@ class TenantUser extends Model
         'user_wallet_amount',
         'tenant_id',
         'deleted_at',
-
     ];
 }

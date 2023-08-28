@@ -2,10 +2,18 @@
 
 use App\Model\Setting;
 
+Route::get('/', function () {
+  if(auth()->user()){
+    return redirect()->route('dashboard');
+  }else{
+    return redirect('/login');
+  }
+});
+
 Auth::routes(['register' => false]);
 
-Route::get('/', 'UserController@dashboard')->name('dashboard');
-Route::get('/index', 'UserController@dashboard')->name('dashboard');
+// Route::get('/dashbord', 'UserController@dashboard')->name('dashboard');
+Route::get('/dashboard', 'UserController@dashboard')->name('dashboard');
 
 /**** User Management ****/
 // Profile

@@ -85,7 +85,7 @@ class SalesPersonController extends Controller
                         $tenantResponse .= '<div class="mb-2">';
                         $tenantResponse .= '<b>' . $tenant->tenant_name . '</b>';
                         $tenantResponse .= '<a href="javascript:void(0)" class="ml-2 edit btn btn-outline-success btn-sm tenant-detail" data-tenant_code="' . $tenant->tenant_code . '">View Detail</a>';
-                        $tenantResponse .= '<a href="' . env('TENANT_URL') . '/' . $tenant->tenant_code . '/sales-person-login/' . Crypt::encryptString(Auth::id()) . '" class="ml-2 edit btn btn-outline-primary btn-sm bypass-login" target="_blank">Login</a>';
+                        $tenantResponse .= '<a href="' . env('TENANT_URL') . '/' . $tenant->tenant_code . '/sales-person-login/' . Auth::id() . '" class="ml-2 edit btn btn-outline-primary btn-sm bypass-login" target="_blank">Login</a>';
                         $tenantResponse .= '</div>';
                     }
                     return $tenantResponse;
